@@ -1,0 +1,7 @@
+jms_serializer:
+    metadata:
+        directories:
+            main:
+                namespace_prefix: "App\\"
+                path: "%kernel.project_dir%/src/Serializer"
+

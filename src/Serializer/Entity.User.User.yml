@@ -1,0 +1,28 @@
+App\Entity\User\User:
+  exclusion_policy: ALL
+  access_type: public_method
+  properties:
+    id:
+      expose: true
+      type: int
+    email:
+      expose: true
+      type: string
+    roles:
+      expose: true
+      type: array
+    isConfirmed:
+      expose: true
+      type: bool
+      accessor:
+        getter: isConfirmed
+        setter: setIsConfirmed
+    isPlayer:
+      expose: true
+      type: bool
+      accessor:
+        getter: isPlayer
+        setter: setIsConfirmed
+
+
+
