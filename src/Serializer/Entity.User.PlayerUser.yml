@@ -1,0 +1,23 @@
+App\Entity\User\PlayerUser:
+  exclusion_policy: ALL
+  access_type: public_method
+  properties:
+    gamerTag:
+      expose: true
+      type: string
+    isCaptain:
+      expose: true
+      type: bool
+    points:
+      expose: true
+      type: int
+    friends:
+      expose: true
+      accessor:
+        getter: getFriends
+        setter: addFriend
+
+
+
+
+

@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\PlayerUser;
+use App\Entity\User\PlayerUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method PlayerUser[]    findAll()
  * @method PlayerUser[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PlayerRepository extends ServiceEntityRepository
+class PlayerUserRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

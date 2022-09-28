@@ -1,26 +1,24 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\User;
 
-use App\Repository\PlayerRepository;
+use App\Repository\PlayerUserRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PlayerRepository::class)]
+#[ORM\Entity(repositoryClass: PlayerUserRepository::class)]
+
 class PlayerUser extends User
 {
     public const ROLE = ['ROLE_PLAYER'];
 
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column(length: 180, unique: true)]
-    private string $gamertTag;
+    private string $gamerTag;
 
     #[ORM\Column]
     private bool $isCaptain = false;
 
+    #[ORM\Column]
+    private int $points = 0;
 
     public function __construct(User $user)
     {
@@ -28,26 +26,14 @@ class PlayerUser extends User
         $this->copyUser($user);
     }
 
-    public function getId(): ?int
+    public function getGamerTag(): string
     {
-        return $this->id;
+        return $this->gamerTag;
     }
 
-    /**
-     * @return string
-     */
-    public function getGamertTag(): string
+    public function setGamerTag(string $gamerTag): PlayerUser
     {
-        return $this->gamertTag;
-    }
-
-    /**
-     * @param string $gamertTag
-     * @return PlayerUser
-     */
-    public function setGamertTag(string $gamertTag): PlayerUser
-    {
-        $this->gamertTag = $gamertTag;
+        $this->gamerTag = $gamerTag;
         return $this;
     }
 
@@ -63,9 +49,22 @@ class PlayerUser extends User
         return $this;
     }
 
+    public function getPoints(): int
+    {
+        return $this->points;
+    }
+
+    public function setPoints(int $points): PlayerUser
+    {
+        $this->points = $points;
+        return $this;
+    }
+
     private function copyUser(User $user)
     {
         $this->setPassword($user->getPassword());
         $this->setEmail($user->getEmail());
+        $this->setRoles(['ROLE_PLAYER']);
     }
+
 }
