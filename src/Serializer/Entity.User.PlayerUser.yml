@@ -11,11 +11,6 @@ App\Entity\User\PlayerUser:
     points:
       expose: true
       type: int
-    friends:
-      expose: true
-      accessor:
-        getter: getFriends
-        setter: addFriend
 
 
 
