@@ -10,20 +10,43 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class UserController extends AbstractFOSRestController
 {
+    #[Rest\Post('/api/players', name: 'post_player')]
+    #[ParamConverter("user", converter:"fos_rest.request_body")]
+    #[Rest\View]
+    public function postUser(User $user, UserService $userService)
+    {
+        return $userService->createUser($user);
+    }
 
     #[Rest\Get('/api/players', name: 'get_players')]
     #[Rest\View]
-    public function getPlayerUsers(UserService $userService)
+    public function getUsers(UserService $userService)
     {
-        return $userService->getAllPlayers();
+        return $userService->getAllUsers();
     }
 
-    #[Rest\Put('/api/players', name: 'post_player')]
-    #[ParamConverter("PlayerUser", converter:"fos_rest.request_body")]
-    public function putPlayerUser(UserService $userService, User $user)
+    #[Rest\Get('/api/players/{id}', name: 'get_player')]
+    #[Rest\View]
+    public function getPlayerById(User $user)
     {
-        return $userService->editPlayer($user);
+        return $user;
     }
 
-    // todo putPlayerById
+    #[Rest\Put('/api/players/{id}', name: 'put_player')]
+    #[ParamConverter("user", converter:"fos_rest.request_body")]
+    #[Rest\View]
+    public function putPlayerUser(User $existingUser, User $user, UserService $userService)
+    {
+        return $userService->editUser($existingUser, $user);
+    }
+
+    #[Rest\Delete('/api/players/{id}', name: 'delete_player')]
+    #[Rest\View]
+    public function deletePlayerUser(User $user, UserService $userService)
+    {
+        $userService->deleteUser($user);
+    }
+
+
+
 }

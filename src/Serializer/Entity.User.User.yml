@@ -8,6 +8,11 @@ App\Entity\User\User:
     email:
       expose: true
       type: string
+    password:
+      expose: false
+      type: string
+      accessor:
+        setter: setPassword
     roles:
       expose: true
       type: array

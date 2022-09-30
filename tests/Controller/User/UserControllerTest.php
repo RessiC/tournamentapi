@@ -13,7 +13,7 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(200);
     }
 
-    public function testHasProperties(): void
+    public function testGetUsers(): void
     {
         $client = static::createClient();
         $client->request('GET', '/api/players');
@@ -30,5 +30,20 @@ class UserControllerTest extends WebTestCase
             $this->assertArrayHasKey('is_captain', $player);
             $this->assertArrayHasKey('points', $player);
         }
+    }
+
+    public function testPutUser(): void
+    {
+        //I need to test if modification affect original user
+    }
+
+    public function testPostUser(): void
+    {
+
+    }
+
+    public function testDeleteUser(): void
+    {
+
     }
 }
