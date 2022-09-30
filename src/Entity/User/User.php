@@ -27,11 +27,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private bool $isPlayer = false;
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\Column(length: 180, unique: true)]
+    private string $gamerTag;
+
+    #[ORM\Column]
+    private bool $isCaptain = false;
+
+    #[ORM\Column]
+    private int $points = 0;
 
     public function __construct()
     {
@@ -144,6 +150,60 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsPlayer(bool $isPlayer): User
     {
         $this->isPlayer = $isPlayer;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGamerTag(): string
+    {
+        return $this->gamerTag;
+    }
+
+    /**
+     * @param string $gamerTag
+     * @return User
+     */
+    public function setGamerTag(string $gamerTag): User
+    {
+        $this->gamerTag = $gamerTag;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCaptain(): bool
+    {
+        return $this->isCaptain;
+    }
+
+    /**
+     * @param bool $isCaptain
+     * @return User
+     */
+    public function setIsCaptain(bool $isCaptain): User
+    {
+        $this->isCaptain = $isCaptain;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPoints(): int
+    {
+        return $this->points;
+    }
+
+    /**
+     * @param int $points
+     * @return User
+     */
+    public function setPoints(int $points): User
+    {
+        $this->points = $points;
         return $this;
     }
 }

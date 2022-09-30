@@ -2,12 +2,11 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\User\PlayerUser;
 use App\Entity\User\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class PlayerUserFixture extends Fixture
+class UserFixture extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -15,13 +14,9 @@ class PlayerUserFixture extends Fixture
             $user = new User();
             $user->setEmail('mail' . $i . '@gmail.com');
             $user->setPassword('abcde');
+            $user->setGamerTag('gt' . $i);
             $manager->persist($user);
-
-            $playerUser = new PlayerUser($user);
-            $playerUser->setGamerTag('gt' . $i);
-            $manager->persist($playerUser);
         }
-
         $manager->flush();
     }
 }

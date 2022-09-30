@@ -4,7 +4,7 @@ namespace App\Tests\Controller\User;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class PlayerUserControllerTest extends WebTestCase
+class UserControllerTest extends WebTestCase
 {
     public function testRouteSuccessful(): void
     {
@@ -28,6 +28,7 @@ class PlayerUserControllerTest extends WebTestCase
             $this->assertArrayHasKey('is_player', $player);
             $this->assertArrayHasKey('gamer_tag', $player);
             $this->assertArrayHasKey('is_captain', $player);
+            $this->assertArrayHasKey('points', $player);
         }
     }
 }
