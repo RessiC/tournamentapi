@@ -19,6 +19,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $email;
 
     #[ORM\Column]
+    private ?string $password = null;
+
+    #[ORM\Column]
     private array $roles = [];
 
     #[ORM\Column]
@@ -26,9 +29,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isPlayer = false;
-
-    #[ORM\Column]
-    private ?string $password = null;
 
     #[ORM\Column(length: 180, unique: true)]
     private string $gamerTag;

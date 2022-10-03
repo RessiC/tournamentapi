@@ -2,6 +2,9 @@
 
 namespace App\Tests\Controller\User;
 
+use App\Entity\User\User;
+use App\Service\UserService;
+use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class UserControllerTest extends WebTestCase
@@ -12,6 +15,25 @@ class UserControllerTest extends WebTestCase
         $client->request('GET', '/api/players');
         $this->assertResponseStatusCodeSame(200);
     }
+
+    public function testPostUser()
+    {
+        $client = static::createClient();
+        $email = 'testemail@gmail.com';
+        $gamerTag = 'testgamertag';
+
+        $response = $client->jsonRequest('POST', '/api/players', [
+            'password' => '122222',
+            'email' => $email,
+            'gamer_tag' => $gamerTag,
+        ]);
+
+        $this->assertResponseStatusCodeSame(200);
+        $player = json_decode($client->getResponse()->getContent(), true);
+        $this->assertArrayHasKey('email', $player);
+        $this->assertArrayHasKey('gamer_tag', $player);
+    }
+
 
     public function testGetUsers(): void
     {
@@ -32,18 +54,4 @@ class UserControllerTest extends WebTestCase
         }
     }
 
-    public function testPutUser(): void
-    {
-        //I need to test if modification affect original user
-    }
-
-    public function testPostUser(): void
-    {
-
-    }
-
-    public function testDeleteUser(): void
-    {
-
-    }
 }

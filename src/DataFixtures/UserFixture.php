@@ -12,9 +12,9 @@ class UserFixture extends Fixture
     {
         for ($i = 0; $i < 5; $i++) {
             $user = new User();
-            $user->setEmail('mail' . $i . '@gmail.com');
-            $user->setPassword('abcde');
-            $user->setGamerTag('gt' . $i);
+            $user->setEmail('mail1' . $i . '@gmail.com');
+            $user->setPassword('abcde1');
+            $user->setGamerTag('gt1' . $i);
             $manager->persist($user);
         }
         $manager->flush();

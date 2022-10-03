@@ -9,7 +9,6 @@ App\Entity\User\User:
       expose: true
       type: string
     password:
-      expose: false
       type: string
       accessor:
         setter: setPassword
