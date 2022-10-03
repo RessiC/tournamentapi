@@ -2,6 +2,7 @@
 
 namespace App\Entity\User;
 
+use App\Entity\Team;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -38,6 +39,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private int $points = 0;
+
+    #[ORM\ManyToOne(inversedBy: 'players')]
+    private ?Team $team = null;
 
     public function __construct()
     {
@@ -204,6 +208,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPoints(int $points): User
     {
         $this->points = $points;
+        return $this;
+    }
+
+    public function getTeam(): ?Team
+    {
+        return $this->team;
+    }
+
+    public function setTeam(?Team $team): self
+    {
+        $this->team = $team;
+
         return $this;
     }
 }
