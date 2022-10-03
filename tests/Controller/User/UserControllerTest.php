@@ -32,7 +32,6 @@ class UserControllerTest extends WebTestCase
         $this->assertArrayHasKey('gamer_tag', $player);
     }
 
-
     public function testGetUsers(): void
     {
         $client = static::createClient();
@@ -66,8 +65,6 @@ class UserControllerTest extends WebTestCase
         $this->assertEquals('newgt1', $player['gamer_tag']);
     }
 
-
-
     public function testDeleteUser(): void
     {
         $client = static::createClient();
@@ -75,6 +72,5 @@ class UserControllerTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(204);
     }
-
 
 }

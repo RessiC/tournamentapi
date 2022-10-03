@@ -46,7 +46,4 @@ class UserController extends AbstractFOSRestController
     {
         $userService->deleteUser($user);
     }
-
-
-
 }
