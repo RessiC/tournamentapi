@@ -2,9 +2,6 @@
 
 namespace App\Tests\Controller\User;
 
-use App\Entity\User\User;
-use App\Service\UserService;
-use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class UserControllerTest extends WebTestCase
@@ -19,7 +16,7 @@ class UserControllerTest extends WebTestCase
     public function testPostUser()
     {
         $client = static::createClient();
-        $email = 'testemail@gmail.com';
+        $email = 'testssemail@gmail.com';
         $gamerTag = 'testgamertag';
 
         $response = $client->jsonRequest('POST', '/api/players', [
@@ -30,6 +27,7 @@ class UserControllerTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(200);
         $player = json_decode($client->getResponse()->getContent(), true);
+
         $this->assertArrayHasKey('email', $player);
         $this->assertArrayHasKey('gamer_tag', $player);
     }
@@ -53,5 +51,30 @@ class UserControllerTest extends WebTestCase
             $this->assertArrayHasKey('points', $player);
         }
     }
+
+    public function testPutUser(): void
+    {
+        $client = static::createClient();
+        $response = $client->jsonRequest('PUT', '/api/players/44', [
+            'email' => 'newmail1@test.fr',
+            'gamer_tag' => 'newgt1',
+        ]);
+        $this->assertResponseStatusCodeSame(200);
+        $player = json_decode($client->getResponse()->getContent(), true);
+
+        $this->assertEquals('newmail1@test.fr', $player['email']);
+        $this->assertEquals('newgt1', $player['gamer_tag']);
+    }
+
+
+
+    public function testDeleteUser(): void
+    {
+        $client = static::createClient();
+        $client->request('DELETE', '/api/players/47');
+
+        $this->assertResponseStatusCodeSame(204);
+    }
+
 
 }
