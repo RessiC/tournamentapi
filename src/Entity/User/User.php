@@ -2,7 +2,7 @@
 
 namespace App\Entity\User;
 
-use App\Entity\Team;
+use App\Entity\Team\Team;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
