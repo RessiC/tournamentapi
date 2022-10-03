@@ -8,6 +8,10 @@ App\Entity\User\User:
     email:
       expose: true
       type: string
+    password:
+      type: string
+      accessor:
+        setter: setPassword
     roles:
       expose: true
       type: array
@@ -23,6 +27,18 @@ App\Entity\User\User:
       accessor:
         getter: isPlayer
         setter: setIsConfirmed
+    gamerTag:
+      expose: true
+      type: string
+    isCaptain:
+      expose: true
+      type: bool
+      accessor:
+        getter: isCaptain
+        setter: setIsCaptain
+    points:
+      expose: true
+      type: int
 
 
 
