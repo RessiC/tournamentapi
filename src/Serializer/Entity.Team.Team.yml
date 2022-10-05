@@ -1,0 +1,16 @@
+App\Entity\Team\Team:
+  exclusion_policy: ALL
+  access_type: public_method
+  properties:
+    id:
+      expose: true
+      type: int
+    name:
+      expose: true
+      type: string
+    players:
+      expose: true
+      type: App\Entity\User\User
+      accessor:
+        getter: getPlayers
+        setter: addPlayer

@@ -3,7 +3,6 @@
 namespace App\Service;
 use App\Entity\User\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 
 class UserService
@@ -33,7 +32,6 @@ class UserService
         $existingUser->setIsCaptain($modifiedUser->isCaptain());
         $existingUser->setPoints($modifiedUser->getPoints());
 
-        $entityManager = $this->managerRegistry->getManager();
         $this->managerRegistry->getManager()->persist($existingUser);
         $this->managerRegistry->getManager()->flush();
 
@@ -53,6 +51,4 @@ class UserService
 
         return $user;
     }
-
-
 }
