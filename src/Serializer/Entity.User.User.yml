@@ -42,6 +42,9 @@ App\Entity\User\User:
     team:
       expose: true
       type: App\Entity\Team\Team
+      accessor:
+        getter: getTeam
+        setter: setTeam
 
 
 
