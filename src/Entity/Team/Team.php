@@ -20,7 +20,7 @@ class Team
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'team', targetEntity: User::class)]
-    private Collection $players;
+    private ?Collection $players = null;
 
     public function __construct()
     {
@@ -30,6 +30,12 @@ class Team
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getName(): ?string
@@ -45,9 +51,9 @@ class Team
     }
 
     /**
-     * @return Collection<int, User>
+     * @return Collection|null
      */
-    public function getPlayers(): Collection
+    public function getPlayers(): Collection|null
     {
         return $this->players;
     }

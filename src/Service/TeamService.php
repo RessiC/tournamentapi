@@ -31,6 +31,11 @@ class TeamService
 
     public function deleteTeam(Team $team): void
     {
+        $players = $team->getPlayers();
+        foreach ($players as $player)
+        {
+            $team->removePlayer($player);
+        }
         $this->managerRegistry->getManager()->remove($team);
         $this->managerRegistry->getManager()->flush();
     }

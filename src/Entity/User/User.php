@@ -43,10 +43,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'players')]
     private ?Team $team = null;
 
-    public function __construct()
-    {
-    }
-
 
     public function getId(): ?int
     {

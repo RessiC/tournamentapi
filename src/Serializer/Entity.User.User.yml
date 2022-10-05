@@ -39,6 +39,9 @@ App\Entity\User\User:
     points:
       expose: true
       type: int
+    team:
+      expose: true
+      type: App\Entity\Team\Team
 
 
 

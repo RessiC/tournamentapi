@@ -10,4 +10,7 @@ App\Entity\Team\Team:
       type: string
     players:
       expose: true
-      type: ArrayCollection<App\Entity\User\User>
+      type: App\Entity\User\User
+      accessor:
+        getter: getPlayers
+        setter: addPlayer
