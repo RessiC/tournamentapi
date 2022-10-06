@@ -2,6 +2,7 @@
 
 namespace App\Controller\User;
 
+use App\Entity\Team\Team;
 use App\Entity\User\User;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -45,5 +46,19 @@ class UserController extends AbstractFOSRestController
     public function deletePlayerUser(User $user, UserService $userService)
     {
         $userService->deleteUser($user);
+    }
+
+    #[Rest\Put('/api/players/{id}/teams/{team}', name: 'player_join_team')]
+    #[Rest\View]
+    public function playerJoinTeam(User $player, Team $team, UserService $userService)
+    {
+        $userService->playerJoinTeam($player, $team);
+    }
+
+    #[Rest\Delete('/api/players/{id}/teams/{team}', name: 'player_leave_team')]
+    #[Rest\View]
+    public function playerLeaveTeam(User $player, Team $team, UserService $userService)
+    {
+        $userService->playerLeaveTeam($player, $team);
     }
 }
