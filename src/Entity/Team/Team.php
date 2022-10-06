@@ -7,6 +7,7 @@ use App\Repository\TeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
 class Team
@@ -19,7 +20,8 @@ class Team
     #[ORM\Column(length: 20)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'team', targetEntity: User::class)]
+    #[ORM\OneToMany(mappedBy: 'team', targetEntity: User::class, cascade: ["persist"], fetch: "EAGER")]
+    #[Assert\Valid]
     private ?Collection $players = null;
 
     public function __construct()
