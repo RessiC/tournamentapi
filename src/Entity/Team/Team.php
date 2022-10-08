@@ -26,12 +26,12 @@ class Team
     private ?Collection $players = null;
 
     #[ORM\ManyToMany(targetEntity: Tournament::class, mappedBy: 'teams')]
-    private Collection $tournaments;
+    private ?Collection $tournaments = null;
 
     public function __construct()
     {
-        $this->players = new ArrayCollection();
         $this->tournaments = new ArrayCollection();
+        $this->players = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -87,10 +87,8 @@ class Team
         return $this;
     }
 
-    /**
-     * @return Collection<int, Tournament>
-     */
-    public function getTournaments(): Collection
+
+    public function getTournaments(): Collection|null
     {
         return $this->tournaments;
     }
