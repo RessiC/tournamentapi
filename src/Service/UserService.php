@@ -2,7 +2,9 @@
 
 namespace App\Service;
 use App\Entity\User\User;
+use App\Entity\Team\Team;
 use App\Repository\UserRepository;
+use App\Repository\TeamRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 class UserService
@@ -50,5 +52,19 @@ class UserService
         $this->managerRegistry->getManager()->flush();
 
         return $user;
+    }
+
+    public function playerJoinTeam(User $player,  Team $team): void
+    {
+        $player->setTeam($team);
+        $this->managerRegistry->getManager()->persist($player);
+        $this->managerRegistry->getManager()->flush();
+    }
+
+    public function playerLeaveTeam(User $player, Team $team)
+    {
+        $team->removePlayer($player);
+        $this->managerRegistry->getManager()->persist($player);
+        $this->managerRegistry->getManager()->flush();
     }
 }

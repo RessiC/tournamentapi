@@ -73,4 +73,26 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(204);
     }
 
+    public function testJoinTeam(): void
+    {
+        $client = static::createClient();
+        $teamId = 1;
+        $client->request('PUT', '/api/players/3/teams/' . $teamId);
+
+        $player = json_decode($client->getResponse()->getContent(), true);
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertNotNull($player["team"]["id"], $teamId);
+        $this->assertEquals($teamId, $player["team"]["id"]);
+    }
+
+    public function testLeaveTeam(): void
+    {
+        $client = static::createClient();
+        $teamId = 1;
+        $client->request('DELETE', '/api/players/3/teams/' . $teamId);
+
+        $player = json_decode($client->getResponse()->getContent(), true);
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertNull($player["team"]);
+    }
 }
