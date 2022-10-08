@@ -1,0 +1,32 @@
+App\Entity\Tournament\Tournament:
+  exclusion_policy: ALL
+  access_type: public_method
+  properties:
+    id:
+      expose: true
+      type: int
+    name:
+      expose: true
+      type: string
+    teams:
+      expose: true
+      type: App\Entity\Team\Team
+      accessor:
+        getter: getTeams
+        setter: addTeam
+    cashPrice:
+      expose: true
+      type: int
+    linkTwitch:
+      expose: true
+      type: string
+    createdAt:
+      expose: true
+    startAt:
+      expose: true
+    points:
+      expose: true
+      type: int
+    type:
+      expose: true
+      type: string
