@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TeamControllerTest extends WebTestCase
 {
+
     public function testRouteSuccessful(): void
     {
         $client = static::createClient();
@@ -59,4 +60,28 @@ class TeamControllerTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(204);
     }
+
+
+    public function testJoinTournament(): void
+    {
+        $client = static::createClient();
+        $tournamentId = 4;
+        $client->request("PUT", "/api/teams/1/tournaments/" . $tournamentId);
+        $team = json_decode($client->getResponse()->getContent(), true);
+
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertNotNull($team["tournaments"]);
+    }
+
+    public function testLeaveTournament(): void
+    {
+        $client = static::createClient();
+        $tournamentId = 4;
+        $client->request("DELETE", "/api/teams/1/tournaments/" . $tournamentId);
+        $team = json_decode($client->getResponse()->getContent(), true);
+
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertEmpty($team["tournaments"]);
+    }
+
 }

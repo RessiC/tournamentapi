@@ -95,4 +95,5 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(200);
         $this->assertNull($player["team"]);
     }
+
 }

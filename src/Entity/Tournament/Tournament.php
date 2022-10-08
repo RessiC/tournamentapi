@@ -19,7 +19,7 @@ class Tournament
     #[ORM\Column(length: 20)]
     private string $name;
 
-    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'tournaments')]
+    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'tournaments', cascade: ["persist"])]
     private Collection $teams;
 
     #[ORM\Column(nullable: true)]
@@ -49,6 +49,13 @@ class Tournament
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getName(): ?string

@@ -3,6 +3,7 @@
 namespace App\Controller\Team;
 
 use App\Entity\Team\Team;
+use App\Entity\Tournament\Tournament;
 use App\Service\TeamService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -36,7 +37,7 @@ class TeamController extends AbstractFOSRestController
     #[Rest\Put('/api/teams/{id}', name: 'put_team')]
     #[ParamConverter("team", converter:"fos_rest.request_body")]
     #[Rest\View]
-    public function putPlayerUser(Team $existingTeam, Team $team, TeamService $teamService)
+    public function putTeam(Team $existingTeam, Team $team, TeamService $teamService)
     {
         return $teamService->editTeam($existingTeam, $team);
     }
@@ -48,4 +49,19 @@ class TeamController extends AbstractFOSRestController
         $teamService->deleteTeam($team);
     }
 
+    #[Rest\Put('api/teams/{id}/tournaments/{tournament}', name: 'team_join_tournament')]
+    #[Rest\View]
+    public function teamJoinTournament(Team $team, Tournament $tournament, TeamService $teamService)
+    {
+        $teamService->teamJoinTournament($team, $tournament);
+        return $team;
+    }
+
+    #[Rest\Delete('api/teams/{id}/tournaments/{tournament}', name: 'team_leave_tournament')]
+    #[Rest\View]
+    public function teamLeaveTournament(Team $team, Tournament $tournament, TeamService $teamService)
+    {
+        $teamService->teamLeaveTournament($team, $tournament);
+        return $team;
+    }
 }

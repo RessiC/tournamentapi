@@ -25,7 +25,6 @@ class TeamService
     public function editTeam(Team $existingTeam, Team $modifiedTeam): Team
     {
         $existingTeam->setName($modifiedTeam->getName());
-        //to do add player
         return $existingTeam;
     }
 
@@ -46,5 +45,19 @@ class TeamService
         $this->managerRegistry->getManager()->flush();
 
         return $team;
+    }
+
+    public function teamJoinTournament(Team $team, \App\Entity\Tournament\Tournament $tournament)
+    {
+        $tournament->addTeam($team);
+        $this->managerRegistry->getManager()->persist($tournament);
+        $this->managerRegistry->getManager()->flush();
+    }
+
+    public function teamLeaveTournament(Team $team, \App\Entity\Tournament\Tournament $tournament)
+    {
+        $tournament->removeTeam($team);
+        $this->managerRegistry->getManager()->persist($tournament);
+        $this->managerRegistry->getManager()->flush();
     }
 }

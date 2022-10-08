@@ -14,3 +14,9 @@ App\Entity\Team\Team:
       accessor:
         getter: getPlayers
         setter: addPlayer
+    tournaments:
+      expose: true
+      type: App\Entity\Tournament\Tournament
+      accessor:
+        getter: getTournaments
+        setter: addTournament
