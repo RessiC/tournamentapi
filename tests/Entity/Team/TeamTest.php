@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Entity;
+namespace App\Tests\Entity\Team;
 
 use App\Entity\Team\Team;
 use App\Entity\User\User;
@@ -14,8 +14,6 @@ class TeamTest extends KernelTestCase
 
         $this->assertNotNull($team);
         $this->assertInstanceOf(Team::class, $team);
-        $this->assertNotNull($team->getPlayers());
-
     }
 
     public function testAddPlayers()

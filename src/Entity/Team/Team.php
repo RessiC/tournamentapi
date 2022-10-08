@@ -2,6 +2,7 @@
 
 namespace App\Entity\Team;
 
+use App\Entity\Tournament\Tournament;
 use App\Entity\User\User;
 use App\Repository\TeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -24,9 +25,13 @@ class Team
     #[Assert\Valid]
     private ?Collection $players = null;
 
+    #[ORM\ManyToMany(targetEntity: Tournament::class, mappedBy: 'teams')]
+    private Collection $tournaments;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
+        $this->tournaments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -77,6 +82,33 @@ class Team
             if ($player->getTeam() === $this) {
                 $player->setTeam(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Tournament>
+     */
+    public function getTournaments(): Collection
+    {
+        return $this->tournaments;
+    }
+
+    public function addTournament(Tournament $tournament): self
+    {
+        if (!$this->tournaments->contains($tournament)) {
+            $this->tournaments->add($tournament);
+            $tournament->addTeam($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTournament(Tournament $tournament): self
+    {
+        if ($this->tournaments->removeElement($tournament)) {
+            $tournament->removeTeam($this);
         }
 
         return $this;
