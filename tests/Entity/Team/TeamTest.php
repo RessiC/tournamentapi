@@ -3,6 +3,7 @@
 namespace App\Tests\Entity\Team;
 
 use App\Entity\Team\Team;
+use App\Entity\Tournament\Tournament;
 use App\Entity\User\User;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -37,5 +38,24 @@ class TeamTest extends KernelTestCase
         $team->removePlayer($player1);
 
         $this->assertCount(0, $team->getPlayers());
+    }
+
+    public function testJoinTournament()
+    {
+        $tournament = new Tournament();
+        $team = new Team();
+        $team->addTournament($tournament);
+
+        $this->assertNotNull($team->getTournaments());
+        $this->assertContainsOnlyInstancesOf(Tournament::class, $team->getTournaments());
+    }
+
+    public function testLeaveTournament()
+    {
+        $tournament = new Tournament();
+        $team = new Team();
+        $team->addTournament($tournament);
+
+        $this->assertNull($team->getTournaments());
     }
 }
