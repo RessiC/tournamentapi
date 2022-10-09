@@ -20,7 +20,7 @@ class Tournament
     private string $name;
 
     #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'tournaments', cascade: ["persist"])]
-    private Collection $teams;
+    private ?Collection $teams = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $cashPrice = null;
@@ -71,9 +71,9 @@ class Tournament
     }
 
     /**
-     * @return Collection<int, Team>
+     * @return Collection|Null
      */
-    public function getTeams(): Collection
+    public function getTeams(): Collection|Null
     {
         return $this->teams;
     }
