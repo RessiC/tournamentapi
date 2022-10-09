@@ -16,8 +16,8 @@ class UserControllerTest extends WebTestCase
     public function testPostUser()
     {
         $client = static::createClient();
-        $email = 'testssemail@gmail.com';
-        $gamerTag = 'testgamertag';
+        $email = 'testsdsemail@gmail.com';
+        $gamerTag = 'testgadmertag';
 
         $response = $client->jsonRequest('POST', '/api/players', [
             'password' => '122222',
