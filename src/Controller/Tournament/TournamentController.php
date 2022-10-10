@@ -2,6 +2,7 @@
 
 namespace App\Controller\Tournament;
 
+use App\Entity\Tournament\Game;
 use App\Entity\Tournament\Tournament;
 use App\Service\TournamentService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -11,7 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 class TournamentController extends AbstractFOSRestController
 {
     #[Rest\Post('/api/tournaments', name: 'post_tournament')]
-    #[ParamConverter("tournament", converter:"fos_rest.request_body")]
+    #[ParamConverter("tournament", converter: "fos_rest.request_body")]
     #[Rest\View]
     public function postTournament(Tournament $tournament, TournamentService $tournamentService)
     {
@@ -33,10 +34,13 @@ class TournamentController extends AbstractFOSRestController
     }
 
     #[Rest\Put('/api/tournaments/{id}', name: 'put_tournament')]
-    #[ParamConverter("tournament", converter:"fos_rest.request_body")]
+    #[ParamConverter("tournament", converter: "fos_rest.request_body")]
     #[Rest\View]
-    public function putTournament(Tournament $existingTournament, Tournament $tournament, TournamentService $tournamentService): Tournament
-    {
+    public function putTournament(
+        Tournament $existingTournament,
+        Tournament $tournament,
+        TournamentService $tournamentService
+    ): Tournament {
         return $tournamentService->editTournament($existingTournament, $tournament);
     }
 
@@ -46,5 +50,43 @@ class TournamentController extends AbstractFOSRestController
     {
         $tournamentService->deleteTournament($tournament);
     }
+
+    #[Rest\Post('/api/tournaments/{id}/games', name: 'post_tournament_game')]
+    #[ParamConverter("game", converter: "fos_rest.request_body")]
+    #[Rest\View]
+    public function postTournamentGame(Tournament $tournament, Game $game, TournamentService $tournamentService)
+    {
+        return $tournamentService->postTournamentGame($tournament, $game);
+    }
+
+    #[Rest\Get('/api/tournaments/{id}/games', name: 'get_tournament_games')]
+    #[Rest\View]
+    public function getTournamentGames(Tournament $tournament, TournamentService $tournamentService)
+    {
+        return $tournamentService->getTournamentGames($tournament->getId());
+    }
+
+    #[Rest\Get('/api/tournaments/{id}/games/{game}', name: 'get_tournament_game')]
+    #[Rest\View]
+    public function getTournamentGameById(Tournament $tournament, Game $game, TournamentService $tournamentService)
+    {
+        return $game;
+    }
+
+    #[Rest\Put('/api/tournaments/{id}/games/{game}', name: 'put_tournament_game')]
+    #[ParamConverter("modifiedGame", class: "App\Entity\Tournament\Game", converter: "fos_rest.request_body")]
+    #[Rest\View]
+    public function putTournamentGame(Tournament $tournament, Game $game, Game $modifiedGame, TournamentService $tournamentService): Game
+    {
+        return $tournamentService->editTournamentGame($tournament, $game, $modifiedGame);
+    }
+
+    #[Rest\Delete('/api/tournaments/{id}/games/{game}', name: 'delete_tournament_game')]
+    #[Rest\View]
+    public function DeleteTournamentGameById(Tournament $tournament, Game $game, TournamentService $tournamentService)
+    {
+        $tournamentService->deleteGame($game);
+    }
+
 
 }

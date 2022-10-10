@@ -2,19 +2,25 @@
 
 namespace App\Service;
 
-use App\Entity\Team\Team;
 use App\Entity\Tournament\Tournament;
+use App\Entity\Tournament\Game;
+use App\Repository\GameRepository;
 use App\Repository\TournamentRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 class TournamentService
 {
     private ManagerRegistry $managerRegistry;
+    private GameRepository $gameRepository;
     private TournamentRepository $tournamentRepository;
 
-    public function __construct(ManagerRegistry $managerRegistry, TournamentRepository $tournamentRepository)
-    {
+    public function __construct(
+        ManagerRegistry $managerRegistry,
+        GameRepository $gameRepository,
+        TournamentRepository $tournamentRepository
+    ) {
         $this->managerRegistry = $managerRegistry;
+        $this->gameRepository = $gameRepository;
         $this->tournamentRepository = $tournamentRepository;
     }
 
@@ -51,5 +57,42 @@ class TournamentService
         $this->managerRegistry->getManager()->remove($tournament);
         $this->managerRegistry->getManager()->flush();
     }
+
+    public function getTournamentGames(int $id)
+    {
+        return $this->gameRepository->findGamesByTournament($id);
+    }
+
+    public function deleteGame(Game $game)
+    {
+        $this->managerRegistry->getManager()->remove($game);
+        $this->managerRegistry->getManager()->flush();
+    }
+
+    public function postTournamentGame(Tournament $tournament, Game $game): Game
+    {
+        $game->setTournament($tournament);
+        $game->setIsFinished(false);
+        $this->managerRegistry->getManager()->persist($game);
+        $this->managerRegistry->getManager()->flush();
+
+        return $game;
+    }
+
+    public function editTournamentGame(Tournament $tournament, Game $existingGame, Game $modifiedGame): Game
+    {
+        if ($tournament->getId() === $existingGame->getTournament()->getId())
+        {
+            $existingGame->setScoreTeam1($modifiedGame->getScoreTeam1());
+            $existingGame->setScoreTeam2($modifiedGame->getScoreTeam2());
+            $existingGame->setIsFinished($modifiedGame->isIsFinished());
+
+            $this->managerRegistry->getManager()->persist($existingGame);
+            $this->managerRegistry->getManager()->flush();
+        }
+
+        return $existingGame;
+    }
+
 
 }

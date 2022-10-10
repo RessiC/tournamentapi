@@ -40,10 +40,14 @@ class Tournament
     #[ORM\Column(length: 10)]
     private ?string $type = null;
 
+    #[ORM\OneToMany(mappedBy: 'tournament', targetEntity: Game::class)]
+    private ?Collection $games = null;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable("now");
+        $this->games = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -162,6 +166,33 @@ class Tournament
     public function setType(string $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getGames(): Collection|null
+    {
+        return $this->games;
+    }
+
+    public function addGame(Game $game): self
+    {
+        if (!$this->games->contains($game)) {
+            $this->games->add($game);
+            $game->setTournament($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGame(Game $game): self
+    {
+        if ($this->games->removeElement($game)) {
+            // set the owning side to null (unless already changed)
+            if ($game->getTournament() === $this) {
+                $game->setTournament(null);
+            }
+        }
 
         return $this;
     }
