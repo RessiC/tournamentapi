@@ -31,6 +31,9 @@ class Game
     #[ORM\Column(nullable: true)]
     private ?int $scoreTeam2 = null;
 
+    #[ORM\ManyToOne(inversedBy: 'games')]
+    private ?Tournament $tournament = null;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
@@ -106,6 +109,18 @@ class Game
     public function setScoreTeam2(?int $scoreTeam2): self
     {
         $this->scoreTeam2 = $scoreTeam2;
+
+        return $this;
+    }
+
+    public function getTournament(): ?Tournament
+    {
+        return $this->tournament;
+    }
+
+    public function setTournament(?Tournament $tournament): self
+    {
+        $this->tournament = $tournament;
 
         return $this;
     }

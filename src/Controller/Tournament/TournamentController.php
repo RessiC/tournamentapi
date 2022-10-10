@@ -47,4 +47,12 @@ class TournamentController extends AbstractFOSRestController
         $tournamentService->deleteTournament($tournament);
     }
 
+    #[Rest\Get('/api/tournaments/{id}/games', name: 'get_tournament_games')]
+    #[Rest\View]
+    public function getTournamentGames(Tournament $tournament, TournamentService $tournamentService)
+    {
+        return $tournamentService->getTournamentGames($tournament->getId());
+    }
+
+
 }

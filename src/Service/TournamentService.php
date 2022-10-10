@@ -4,17 +4,20 @@ namespace App\Service;
 
 use App\Entity\Team\Team;
 use App\Entity\Tournament\Tournament;
+use App\Repository\GameRepository;
 use App\Repository\TournamentRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 class TournamentService
 {
     private ManagerRegistry $managerRegistry;
+    private GameRepository $gameRepository;
     private TournamentRepository $tournamentRepository;
 
-    public function __construct(ManagerRegistry $managerRegistry, TournamentRepository $tournamentRepository)
+    public function __construct(ManagerRegistry $managerRegistry, GameRepository $gameRepository, TournamentRepository $tournamentRepository)
     {
         $this->managerRegistry = $managerRegistry;
+        $this->gameRepository = $gameRepository;
         $this->tournamentRepository = $tournamentRepository;
     }
 
@@ -50,6 +53,11 @@ class TournamentService
     {
         $this->managerRegistry->getManager()->remove($tournament);
         $this->managerRegistry->getManager()->flush();
+    }
+
+    public function getTournamentGames(int $id)
+    {
+        return $this->gameRepository->findGamesByTournament($id);
     }
 
 }

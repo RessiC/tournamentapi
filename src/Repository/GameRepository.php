@@ -39,6 +39,15 @@ class GameRepository extends ServiceEntityRepository
         }
     }
 
+    public function findGamesByTournament(int $id)
+    {
+        return $this->createQueryBuilder('g')
+            ->where('g.tournament = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+
+    }
 //    /**
 //     * @return Game[] Returns an array of Game objects
 //     */
