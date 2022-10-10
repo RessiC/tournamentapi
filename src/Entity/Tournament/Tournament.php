@@ -41,7 +41,7 @@ class Tournament
     private ?string $type = null;
 
     #[ORM\OneToMany(mappedBy: 'tournament', targetEntity: Game::class)]
-    private Collection $games;
+    private ?Collection $games = null;
 
     public function __construct()
     {
@@ -170,10 +170,7 @@ class Tournament
         return $this;
     }
 
-    /**
-     * @return Collection<int, Game>
-     */
-    public function getGames(): Collection
+    public function getGames(): Collection|null
     {
         return $this->games;
     }
