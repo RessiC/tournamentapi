@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller\Tournament;
 
+
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
@@ -47,15 +48,25 @@ class TournamentControllerTest extends WebTestCase
 
     public function testGetTournament(): void
     {
-        $tournamentId = 4;
+        $tournamentId = 1;
         $this->client->request('GET', 'api/tournaments/' . $tournamentId );
+        $tournament = json_decode($this->client->getResponse()->getContent(), true);
 
         $this->assertResponseStatusCodeSame(200);
+        $this->assertArrayHasKey("id", $tournament);
+        $this->assertArrayHasKey("name", $tournament);
+        $this->assertArrayHasKey("teams", $tournament);
+        $this->assertArrayHasKey("cash_price", $tournament);
+        $this->assertArrayHasKey("link_twitch", $tournament);
+        $this->assertArrayHasKey("created_at", $tournament);
+        $this->assertArrayHasKey("start_at", $tournament);
+        $this->assertArrayHasKey("points", $tournament);
+        $this->assertArrayHasKey("type", $tournament);
     }
 
     public function testGetTournaments(): void
     {
-        $this->client->request('GET', 'api/tournaments'  );
+        $this->client->request('GET', 'api/tournaments');
 
         $this->assertResponseStatusCodeSame(200);
     }

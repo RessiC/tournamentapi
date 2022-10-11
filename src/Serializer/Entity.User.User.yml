@@ -26,7 +26,7 @@ App\Entity\User\User:
       type: bool
       accessor:
         getter: isPlayer
-        setter: setIsConfirmed
+        setter: setIsPlayer
     gamerTag:
       expose: true
       type: string
