@@ -1,0 +1,31 @@
+App\Entity\Tournament\Game:
+  exclusion_policy: ALL
+  access_type: public_method
+  properties:
+    id:
+      expose: true
+      type: int
+    name:
+      expose: true
+      type: string
+    teams:
+      expose: true
+      type: App\Entity\Team\Team
+      accessor:
+        getter: getTeams
+        setter: addTeam
+    isFinished:
+      expose: true
+      type: bool
+      accessor:
+        getter: isFinished
+        setter: setIsFinished
+    scoreTeam1:
+      expose: true
+      type: int
+    scoreTeam2:
+      expose: true
+      type: int
+    tournament:
+      expose: true
+      type: App\Entity\Tournament\Tournament
