@@ -21,13 +21,6 @@ Cyril Ressi (myself) is  main and only developer on this project.
 - SQL Database
 - Twig and Boostrap
 
-# how
-I want to develop this project in the most professional way possible with my knowledges and skills :
-
-- Trello for the whole management of this project
-- DevAzure for development work management (with Sprints)
-- Github to host code and version control
-- TDD - Test Driven development
 
 
 
