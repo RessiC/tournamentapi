@@ -83,7 +83,7 @@ class TournamentController extends AbstractFOSRestController
 
     #[Rest\Delete('/api/tournaments/{id}/games/{game}', name: 'delete_tournament_game')]
     #[Rest\View]
-    public function DeleteTournamentGameById(Tournament $tournament, Game $game, TournamentService $tournamentService)
+    public function deleteTournamentGameById(Tournament $tournament, Game $game, TournamentService $tournamentService)
     {
         $tournamentService->deleteGame($game);
     }
