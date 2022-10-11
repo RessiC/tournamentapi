@@ -85,7 +85,7 @@ class TournamentService
         {
             $existingGame->setScoreTeam1($modifiedGame->getScoreTeam1());
             $existingGame->setScoreTeam2($modifiedGame->getScoreTeam2());
-            $existingGame->setIsFinished($modifiedGame->isIsFinished());
+            $existingGame->setIsFinished($modifiedGame->isFinished());
 
             $this->managerRegistry->getManager()->persist($existingGame);
             $this->managerRegistry->getManager()->flush();
