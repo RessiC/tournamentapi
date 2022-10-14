@@ -2,27 +2,25 @@
 
 namespace App\Tests\Controller\Team;
 
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TeamControllerTest extends WebTestCase
 {
+    private KernelBrowser $client;
 
-    public function testRouteSuccessful(): void
+    public function setup(): void
     {
-        $client = static::createClient();
-        $client->request('GET', '/api/teams');
-        $this->assertResponseStatusCodeSame(200);
+        $this->client = static::createClient();
     }
 
     public function testPostTeam(): void
     {
-        $client = static::createClient();
         $name = 'testPostName';
-
-        $response = $client->jsonRequest('POST', '/api/teams', [
+        $this->client->jsonRequest('POST', '/api/teams', [
             'name' => $name
         ]);
-        $team = json_decode($client->getResponse()->getContent(), true);
+        $team = json_decode($this->client->getResponse()->getContent(), true);
 
         $this->assertResponseStatusCodeSame(200);
         $this->assertArrayHasKey('name', $team);
@@ -30,10 +28,9 @@ class TeamControllerTest extends WebTestCase
 
     public function testGetTeams(): void
     {
-        $client = static::createClient();
-        $client->request('GET', '/api/teams');
+        $this->client->request('GET', '/api/teams');
+        $teams = json_decode($this->client->getResponse()->getContent(), true);
 
-        $teams = json_decode($client->getResponse()->getContent(), true);
         foreach ($teams as $team) {
             $this->assertArrayHasKey('id', $team);
             $this->assertArrayHasKey('name', $team);
@@ -41,13 +38,24 @@ class TeamControllerTest extends WebTestCase
         }
     }
 
+    public function testGetTeam(): void
+    {
+        $teamId = 1;
+        $this->client->request('GET', '/api/teams/' . $teamId);
+        $team = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertArrayHasKey('id', $team);
+        $this->assertArrayHasKey('name', $team);
+        $this->assertArrayHasKey('players', $team);
+    }
+
     public function testPutTeam(): void
     {
-        $client = static::createClient();
-        $response = $client->jsonRequest('PUT', '/api/teams/11', [
+        $this->client->jsonRequest('PUT', '/api/teams/11', [
             'name' => 'putNameHERE'
         ]);
-        $team = json_decode($client->getResponse()->getContent(), true);
+        $team = json_decode($this->client->getResponse()->getContent(), true);
 
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals('putNameHERE', $team['name']);
@@ -55,19 +63,16 @@ class TeamControllerTest extends WebTestCase
 
     public function testDeleteTeam(): void
     {
-        $client = static::createClient();
-        $client->request('DELETE', '/api/teams/11');
+        $this->client->request('DELETE', '/api/teams/11');
 
         $this->assertResponseStatusCodeSame(204);
     }
 
-
     public function testJoinTournament(): void
     {
-        $client = static::createClient();
         $tournamentId = 4;
-        $client->request("PUT", "/api/teams/1/tournaments/" . $tournamentId);
-        $team = json_decode($client->getResponse()->getContent(), true);
+        $this->client->request("PUT", "/api/teams/1/tournaments/" . $tournamentId);
+        $team = json_decode($this->client->getResponse()->getContent(), true);
 
         $this->assertResponseStatusCodeSame(200);
         $this->assertNotNull($team["tournaments"]);
@@ -75,13 +80,27 @@ class TeamControllerTest extends WebTestCase
 
     public function testLeaveTournament(): void
     {
-        $client = static::createClient();
         $tournamentId = 4;
-        $client->request("DELETE", "/api/teams/1/tournaments/" . $tournamentId);
-        $team = json_decode($client->getResponse()->getContent(), true);
+        $this->client->request("DELETE", "/api/teams/1/tournaments/" . $tournamentId);
+        $team = json_decode($this->client->getResponse()->getContent(), true);
 
         $this->assertResponseStatusCodeSame(200);
         $this->assertEmpty($team["tournaments"]);
     }
 
+    public function testReturn404NotFoundOnUnknownTeamId(): void
+    {
+        $unknownId = 10000;
+        $this->client->request('GET', 'api/teams/' . $unknownId );
+
+        $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testReturn200OKOnExistingTeamId(): void
+    {
+        $knownId = 1;
+        $this->client->request('GET', '/api/teams/' . $knownId);
+
+        $this->assertResponseStatusCodeSame(200);
+    }
 }

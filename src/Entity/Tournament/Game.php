@@ -20,7 +20,7 @@ class Game
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Team::class)]
-    private ?Collection $teams;
+    private ?Collection $teams = null;
 
     #[ORM\Column]
     private ?bool $isFinished = null;
