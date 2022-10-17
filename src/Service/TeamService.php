@@ -5,16 +5,20 @@ namespace App\Service;
 use App\Entity\Team\Team;
 use App\Repository\TeamRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Validator\Exception\ValidatorException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class TeamService
 {
     private ManagerRegistry $managerRegistry;
     private TeamRepository $teamRepository;
+    private ValidatorInterface $validator;
 
-    public function __construct( ManagerRegistry $managerRegistry, TeamRepository $teamRepository)
+    public function __construct( ManagerRegistry $managerRegistry, TeamRepository $teamRepository, ValidatorInterface $validator)
     {
         $this->managerRegistry = $managerRegistry;
         $this->teamRepository = $teamRepository;
+        $this->validator = $validator;
     }
 
     public function getAllTeams(): array
@@ -24,8 +28,14 @@ class TeamService
 
     public function editTeam(Team $existingTeam, Team $modifiedTeam): Team
     {
-        $existingTeam->setName($modifiedTeam->getName());
-        return $existingTeam;
+        $errors = $this->validator->validate($modifiedTeam);
+        if (count($errors) > 0)
+        {
+            throw new ValidatorException($errors);
+        } else {
+            $existingTeam->setName($modifiedTeam->getName());
+            return $existingTeam;
+        }
     }
 
     public function deleteTeam(Team $team): void
@@ -39,12 +49,18 @@ class TeamService
         $this->managerRegistry->getManager()->flush();
     }
 
-    public function createTeam(Team $team): Team
+    public function createTeam(Team $team)
     {
-        $this->managerRegistry->getManager()->persist($team);
-        $this->managerRegistry->getManager()->flush();
+        $errors = $this->validator->validate($team);
+        if (count($errors) > 0)
+        {
+            throw new ValidatorException($errors);
+        } else {
+            $this->managerRegistry->getManager()->persist($team);
+            $this->managerRegistry->getManager()->flush();
 
-        return $team;
+            return $team;
+        }
     }
 
     public function teamJoinTournament(Team $team, \App\Entity\Tournament\Tournament $tournament)

@@ -1,0 +1,66 @@
+App\Entity\User\User:
+  constraints:
+    - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: email
+    - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: gamerTag
+  properties:
+    email:
+      - Email:
+          message: 'The email "{{ value }}" is not a valid email'
+    gamerTag:
+      - Length:
+          min: 4
+          max: 16
+          minMessage: 'Team name must be at least {{ limit }} characters long'
+          maxMessage: 'Team name cannot be longer than {{ limit }} characters'
+    points:
+      - PositiveOrZero: ~
+
+App\Entity\Team\Team:
+  properties:
+    name:
+      - Length:
+          min: 2
+          max: 16
+          minMessage: 'Team name must be at least {{ limit }} characters long'
+          maxMessage: 'Team name cannot be longer than {{ limit }} characters'
+
+App\Entity\Tournament\Tournament:
+  constraints:
+    - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: name
+  properties:
+    name:
+      - Length:
+          min: 2
+          max: 16
+          minMessage: 'Team name must be at least {{ limit }} characters long'
+          maxMessage: 'Team name cannot be longer than {{ limit }} characters'
+    points:
+      - PositiveOrZero: ~
+    type:
+      - Length:
+          min: 2
+          max: 4
+          minMessage: 'Team name must be at least {{ limit }} characters long'
+          maxMessage: 'Team name cannot be longer than {{ limit }} characters'
+    cashPrice:
+      - PositiveOrZero: ~
+
+App\Entity\Tournament\Game:
+  properties:
+    name:
+      - Length:
+          min: 2
+          max: 4
+          minMessage: 'Team name must be at least {{ limit }} characters long'
+          maxMessage: 'Team name cannot be longer than {{ limit }} characters'
+    scoreTeam1:
+      - Range:
+          min: 0
+          max: 5
+          notInRangeMessage: 'Score Team 1 must be between {{ min }} and {{ max }}'
+    scoreTeam2:
+      - Range:
+          min: 0
+          max: 5
+          notInRangeMessage: 'Score Team 2 must be between {{ min }} and {{ max }}'
+
