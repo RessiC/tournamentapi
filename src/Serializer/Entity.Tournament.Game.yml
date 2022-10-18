@@ -8,12 +8,12 @@ App\Entity\Tournament\Game:
     name:
       expose: true
       type: string
-    teams:
+    team1:
       expose: true
       type: App\Entity\Team\Team
-      accessor:
-        getter: getTeams
-        setter: addTeam
+    team2:
+      expose: true
+      type: App\Entity\Team\Team
     isFinished:
       expose: true
       type: bool

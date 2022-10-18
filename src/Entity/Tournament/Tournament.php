@@ -40,7 +40,7 @@ class Tournament
     #[ORM\Column(length: 10)]
     private ?string $type = null;
 
-    #[ORM\OneToMany(mappedBy: 'tournament', targetEntity: Game::class)]
+    #[ORM\OneToMany(mappedBy: 'tournament', targetEntity: Game::class, cascade: ["persist", "remove"])]
     private ?Collection $games = null;
 
     public function __construct()
@@ -195,5 +195,20 @@ class Tournament
         }
 
         return $this;
+    }
+
+    public function generateGame(int $numbers): array
+    {
+        $games = [];
+        for ($i = 1; $i < $numbers; $i++)
+        {
+            $game = new Game();
+            $gameName = $game->getListNameGame();
+            $game->setName($gameName[$i]);
+            $game->setTournament($this);
+            $game->setIsFinished(false);
+            $games[] = $game;
+        }
+        return $games;
     }
 }

@@ -4,19 +4,34 @@ namespace App\Controller\Tournament;
 
 use App\Entity\Tournament\Game;
 use App\Entity\Tournament\Tournament;
+use App\EventSubscriber\TournamentCreateEvent;
+use App\EventSubscriber\TournamentEventSubscriber;
 use App\Service\TournamentService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class TournamentController extends AbstractFOSRestController
 {
+    private EventDispatcherInterface $eventDispatcher;
+
+    public function __construct(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     #[Rest\Post('/api/tournaments', name: 'post_tournament')]
     #[ParamConverter("tournament", converter: "fos_rest.request_body")]
     #[Rest\View]
     public function postTournament(Tournament $tournament, TournamentService $tournamentService)
     {
         return $tournamentService->postTournament($tournament);
+
+        /*
+        $event = new TournamentCreateEvent($tournament);
+        $this->eventDispatcher->addSubscriber(new TournamentEventSubscriber());
+        $this->eventDispatcher->dispatch($event, TournamentCreateEvent::NAME); */
     }
 
     #[Rest\Get('/api/tournaments', name: 'get_tournaments')]
