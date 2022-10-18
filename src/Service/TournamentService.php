@@ -36,6 +36,10 @@ class TournamentService
         if (count($errors) > 0) {
             throw new ValidatorException($errors);
         } else {
+            foreach ($tournament->generateGame(32) as $game)
+            {
+                $this->managerRegistry->getManager()->persist($game);
+            }
             $tournament->setCreatedAt(new \DateTimeImmutable("now"));
             $this->managerRegistry->getManager()->persist($tournament);
             $this->managerRegistry->getManager()->flush();
