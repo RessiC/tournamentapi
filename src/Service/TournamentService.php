@@ -36,7 +36,8 @@ class TournamentService
         if (count($errors) > 0) {
             throw new ValidatorException($errors);
         } else {
-            //32 games is default value for this type of tournament
+            // when posting Tournament, all necessary games are generated
+            // 32 games is default value for this type of tournament
             foreach ($tournament->generateGame(32) as $game)
             {
                 $this->managerRegistry->getManager()->persist($game);
