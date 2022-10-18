@@ -68,6 +68,12 @@ class Game
         31 => "WF",
     ];
 
+    #[ORM\ManyToOne]
+    private ?Team $team1 = null;
+
+    #[ORM\ManyToOne]
+    private ?Team $team2 = null;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
@@ -168,5 +174,29 @@ class Game
     public function getListNameGame(): array
     {
         return $this->listGameName;
+    }
+
+    public function getTeam1(): ?Team
+    {
+        return $this->team1;
+    }
+
+    public function setTeam1(?Team $team1): self
+    {
+        $this->team1 = $team1;
+
+        return $this;
+    }
+
+    public function getTeam2(): ?Team
+    {
+        return $this->team2;
+    }
+
+    public function setTeam2(?Team $team2): self
+    {
+        $this->team2 = $team2;
+
+        return $this;
     }
 }
