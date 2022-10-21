@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+use function PHPUnit\Framework\throwException;
+
 #[ORM\Entity(repositoryClass: GameRepository::class)]
 class Game
 {
@@ -19,11 +21,14 @@ class Game
     #[ORM\Column(length: 10)]
     private ?string $name = null;
 
-    #[ORM\ManyToMany(targetEntity: Team::class)]
-    private ?Collection $teams = null;
-
     #[ORM\Column]
     private ?bool $isFinished = null;
+
+    #[ORM\ManyToOne]
+    private ?Team $team1 = null;
+
+    #[ORM\ManyToOne]
+    private ?Team $team2 = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $scoreTeam1 = null;
@@ -68,16 +73,11 @@ class Game
         31 => "WF",
     ];
 
-    #[ORM\ManyToOne]
-    private ?Team $team1 = null;
-
-    #[ORM\ManyToOne]
-    private ?Team $team2 = null;
 
     public function __construct()
     {
-        $this->teams = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -98,27 +98,6 @@ class Game
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getTeams(): Collection|Null
-    {
-        return $this->teams;
-    }
-
-    public function addTeam(Team $team): self
-    {
-        if (!$this->teams->contains($team)) {
-            $this->teams->add($team);
-        }
-
-        return $this;
-    }
-
-    public function removeTeam(Team $team): self
-    {
-        $this->teams->removeElement($team);
 
         return $this;
     }
