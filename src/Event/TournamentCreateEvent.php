@@ -1,6 +1,6 @@
 <?php
 
-namespace App\EventSubscriber;
+namespace App\Event;
 
 use App\Entity\Tournament\Tournament;
 use Symfony\Contracts\EventDispatcher\Event;

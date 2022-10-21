@@ -2,9 +2,9 @@
 
 namespace App\EventSubscriber;
 
-use App\Entity\Tournament\Tournament;
-use App\EventSubscriber\TournamentCreateEvent;
-
+use App\Event\GameUpdateEvent;
+use App\Event\TournamentCreateEvent;
+use App\Event\TournamentUpdateEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class TournamentEventSubscriber implements EventSubscriberInterface
@@ -15,18 +15,18 @@ class TournamentEventSubscriber implements EventSubscriberInterface
         return [
             TournamentCreateEvent::NAME => 'onTournamentCreation',
             TournamentUpdateEvent::NAME => 'onTournamentUpdating',
+            GameUpdateEvent::NAME =>  'onGameUpdating',
 
         ];
     }
 
-    public function onTournamentCreation(TournamentCreateEvent $event)
+    /**
+     * @throws \Exception
+     */
+    public function onGameUpdating(GameUpdateEvent $event)
     {
+        $event->setNextGame();
+        $event->stopPropagation();
     }
-
-    public function onTournamentUpdating(TournamentUpdateEvent $event)
-    {
-
-    }
-
 
 }

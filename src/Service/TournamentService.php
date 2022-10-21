@@ -4,9 +4,12 @@ namespace App\Service;
 
 use App\Entity\Tournament\Tournament;
 use App\Entity\Tournament\Game;
+use App\Event\GameUpdateEvent;
+use App\EventSubscriber\TournamentEventSubscriber;
 use App\Repository\GameRepository;
 use App\Repository\TournamentRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -16,18 +19,21 @@ class TournamentService
     private GameRepository $gameRepository;
     private TournamentRepository $tournamentRepository;
     private ValidatorInterface $validator;
+    private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
         ManagerRegistry $managerRegistry,
         GameRepository $gameRepository,
         TournamentRepository $tournamentRepository,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        EventDispatcherInterface $eventDispatcher
 
     ) {
         $this->managerRegistry = $managerRegistry;
         $this->gameRepository = $gameRepository;
         $this->tournamentRepository = $tournamentRepository;
         $this->validator = $validator;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function postTournament(Tournament $tournament): Tournament
@@ -100,21 +106,29 @@ class TournamentService
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function editTournamentGame(Tournament $tournament, Game $existingGame, Game $modifiedGame): Game
     {
         $errors = $this->validator->validate($modifiedGame);
         if (count($errors) > 0) {
             throw new ValidatorException($errors);
-        } else {
-            $existingGame->setScoreTeam1($modifiedGame->getScoreTeam1());
-            $existingGame->setScoreTeam2($modifiedGame->getScoreTeam2());
-            $existingGame->setIsFinished($modifiedGame->isFinished());
-
-            $this->managerRegistry->getManager()->persist($existingGame);
-            $this->managerRegistry->getManager()->flush();
-
-            return $existingGame;
         }
+
+        $existingGame->setScoreTeam1($modifiedGame->getScoreTeam1());
+        $existingGame->setScoreTeam2($modifiedGame->getScoreTeam2());
+        $existingGame->setIsFinished($modifiedGame->isFinished());
+
+        $this->managerRegistry->getManager()->persist($existingGame);
+        $this->managerRegistry->getManager()->flush();
+
+        $event = new GameUpdateEvent($existingGame);
+        $this->eventDispatcher->addSubscriber(new TournamentEventSubscriber());
+        $this->eventDispatcher->dispatch($event, GameUpdateEvent::NAME);
+
+
+        return $existingGame;
     }
 
     public function deleteGame(Game $game)
