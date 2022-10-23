@@ -39,7 +39,7 @@ class Game
     #[ORM\ManyToOne(cascade: ["persist"], inversedBy: 'games')]
     private ?Tournament $tournament = null;
 
-    private array $listGameName = [
+    private static array $listGameName = [
         1 => "A",
         2 => "B",
         3 => "C",
@@ -150,9 +150,9 @@ class Game
         return $this;
     }
 
-    public function getListNameGame(): array
+    public static function getListNameGame(): array
     {
-        return $this->listGameName;
+        return self::$listGameName;
     }
 
     public function getTeam1(): ?Team

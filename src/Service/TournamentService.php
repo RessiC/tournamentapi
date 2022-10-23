@@ -4,8 +4,6 @@ namespace App\Service;
 
 use App\Entity\Tournament\Tournament;
 use App\Entity\Tournament\Game;
-use App\Event\GameUpdateEvent;
-use App\EventSubscriber\TournamentEventSubscriber;
 use App\Repository\GameRepository;
 use App\Repository\TournamentRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -27,7 +25,6 @@ class TournamentService
         TournamentRepository $tournamentRepository,
         ValidatorInterface $validator,
         EventDispatcherInterface $eventDispatcher
-
     ) {
         $this->managerRegistry = $managerRegistry;
         $this->gameRepository = $gameRepository;
@@ -36,24 +33,43 @@ class TournamentService
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function postTournament(Tournament $tournament): Tournament
+    public function createsTournament(Tournament $tournament): Tournament
     {
         $errors = $this->validator->validate($tournament);
         if (count($errors) > 0) {
             throw new ValidatorException($errors);
         } else {
-            // when posting Tournament, all necessary games are generated
-            // 32 games is default value for this type of tournament
-            foreach ($tournament->generateGame(32) as $game)
-            {
-                $this->managerRegistry->getManager()->persist($game);
-            }
-            $tournament->setCreatedAt(new \DateTimeImmutable("now"));
+            $tournament->setCreatedAt(new \DateTime());
+            $this->generateGame($tournament);
             $this->managerRegistry->getManager()->persist($tournament);
             $this->managerRegistry->getManager()->flush();
         }
 
         return $tournament;
+    }
+
+    public function generateGame(Tournament $tournament)
+    {
+
+        //Number of generateGame Depends on Tournament.format
+        // format.numberOfTeam: int $x
+        // format.elimination  int $y (simple 1, double 2)
+        // if $x = 32, we should generate $n games
+        // if $y = 2, we should generate 2 x $n games
+
+        /*
+        $games = [];
+        for ($n = 1; $n < $numbers; $n++)
+        {
+            $game = new Game();
+            $gameName = $game::getListNameGame();
+            $game->setName($gameName[$i]);
+            $game->setTournament($tournament);
+            $game->setIsFinished(false);
+            $games[] = $game;
+        }
+        return $games;
+        */
     }
 
     public function getAllTournament(): array
@@ -106,9 +122,6 @@ class TournamentService
         }
     }
 
-    /**
-     * @throws \Exception
-     */
     public function editTournamentGame(Tournament $tournament, Game $existingGame, Game $modifiedGame): Game
     {
         $errors = $this->validator->validate($modifiedGame);
@@ -123,11 +136,6 @@ class TournamentService
         $this->managerRegistry->getManager()->persist($existingGame);
         $this->managerRegistry->getManager()->flush();
 
-        $event = new GameUpdateEvent($existingGame);
-        $this->eventDispatcher->addSubscriber(new TournamentEventSubscriber());
-        $this->eventDispatcher->dispatch($event, GameUpdateEvent::NAME);
-
-
         return $existingGame;
     }
 
@@ -136,4 +144,6 @@ class TournamentService
         $this->managerRegistry->getManager()->remove($game);
         $this->managerRegistry->getManager()->flush();
     }
+
+
 }

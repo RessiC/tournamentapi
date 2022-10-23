@@ -29,10 +29,10 @@ class Tournament
     private ?string $linkTwitch = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private \DateTime $createdAt;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $startAt = null;
+    private ?\DateTime $startAt = null;
 
     #[ORM\Column]
     private ?int $points = null;
@@ -46,7 +46,7 @@ class Tournament
     public function __construct()
     {
         $this->teams = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable("now");
+        $this->createdAt = new \DateTime();
         $this->games = new ArrayCollection();
     }
 
@@ -122,24 +122,24 @@ class Tournament
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(\DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getStartAt(): ?\DateTimeImmutable
+    public function getStartAt(): ?\DateTime
     {
         return $this->startAt;
     }
 
-    public function setStartAt(\DateTimeImmutable $startAt): self
+    public function setStartAt(\DateTime $startAt): self
     {
         $this->startAt = $startAt;
 
@@ -197,18 +197,4 @@ class Tournament
         return $this;
     }
 
-    public function generateGame(int $numbers): array
-    {
-        $games = [];
-        for ($i = 1; $i < $numbers; $i++)
-        {
-            $game = new Game();
-            $gameName = $game->getListNameGame();
-            $game->setName($gameName[$i]);
-            $game->setTournament($this);
-            $game->setIsFinished(false);
-            $games[] = $game;
-        }
-        return $games;
-    }
 }
