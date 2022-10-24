@@ -202,7 +202,7 @@ class Tournament
         return $this;
     }
 
-    public function isBracketLooser(): ?bool
+    public function hasBracketLooser(): ?bool
     {
         return $this->BracketLooser;
     }

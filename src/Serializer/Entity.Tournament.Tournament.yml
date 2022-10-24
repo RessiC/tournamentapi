@@ -33,3 +33,6 @@ App\Entity\Tournament\Tournament:
     BracketLooser:
       expose: true
       type: bool
+      accessor:
+        getter: hasBracketLooser
+        setter: setBracketLooser

@@ -38,6 +38,13 @@ App\Entity\Tournament\Tournament:
       - PositiveOrZero: ~
     cashPrice:
       - PositiveOrZero: ~
+    TeamsNeeded:
+      - Range:
+            min: 2
+            max: 64
+            notInRangeMessage: 'Teams needed must be between {{ min }} and {{ max }}'
+    BracketLooser:
+      - Type: bool
 
 App\Entity\Tournament\Game:
   properties:

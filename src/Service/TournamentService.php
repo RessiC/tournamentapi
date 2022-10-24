@@ -37,8 +37,8 @@ class TournamentService
         } else {
             $tournament->setCreatedAt(new \DateTime());
             $this->generateGame($tournament);
-            $this->managerRegistry->getManager()->persist($tournament);
-            $this->managerRegistry->getManager()->flush();
+            //$this->managerRegistry->getManager()->persist($tournament);
+            //$this->managerRegistry->getManager()->flush();
         }
 
         return $tournament;
@@ -46,6 +46,17 @@ class TournamentService
 
     public function generateGame(Tournament $tournament)
     {
+        $amountOfGameNeeded = $this->getAmountOfGameNeeded($tournament->getTeamsNeeded(), $tournament->hasBracketLooser());
+        for ($i = 0; $i < $amountOfGameNeeded; $i++) {
+            $game = new Game();
+            $game->setName($i);
+        }
+
+
+
+
+        //next step: need to assign team in each first game depending on team rank when tournamentIsStarted
+
 
     }
 
@@ -119,6 +130,20 @@ class TournamentService
     {
         $this->managerRegistry->getManager()->remove($game);
         $this->managerRegistry->getManager()->flush();
+    }
+
+    private function getAmountOfGameNeeded(int $amountOfTeams, bool $hasBracketLooser): int
+    {
+        $amount = 1;
+        for ($i = 1; $i <= $amountOfTeams; $i += 2) {
+            $amount = $i;
+        }
+
+        if ($hasBracketLooser) {
+            $amount = $amount * 2;
+        }
+
+        return $amount;
     }
 
 
