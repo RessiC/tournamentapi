@@ -47,25 +47,6 @@ class TournamentService
     public function generateGame(Tournament $tournament)
     {
 
-        //Number of generateGame Depends on Tournament.format
-        // format.numberOfTeam: int $x
-        // format.elimination  int $y (simple 1, double 2)
-        // if $x = 32, we should generate $n games
-        // if $y = 2, we should generate 2 x $n games
-
-        /*
-        $games = [];
-        for ($n = 1; $n < $numbers; $n++)
-        {
-            $game = new Game();
-            $gameName = $game::getListNameGame();
-            $game->setName($gameName[$i]);
-            $game->setTournament($tournament);x
-            $game->setIsFinished(false);
-            $games[] = $game;
-        }
-        return $games;
-        */
     }
 
     public function getAllTournament(): array
@@ -84,7 +65,6 @@ class TournamentService
             $existingTournament->setLinkTwitch($modifiedTournament->getLinkTwitch());
             $existingTournament->setStartAt($modifiedTournament->getStartAt());
             $existingTournament->setPoints($modifiedTournament->getPoints());
-            $existingTournament->setType($modifiedTournament->getType());
             $this->managerRegistry->getManager()->persist($existingTournament);
             $this->managerRegistry->getManager()->flush();
 
