@@ -5,6 +5,7 @@ namespace App\Controller\Tournament;
 use App\Entity\Tournament\Game;
 use App\Entity\Tournament\Tournament;
 use App\Service\TournamentService;
+use Exception;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -16,7 +17,7 @@ class TournamentController extends AbstractFOSRestController
     #[Rest\View]
     public function postTournament(Tournament $tournament, TournamentService $tournamentService)
     {
-        return $tournamentService->postTournament($tournament);
+        return $tournamentService->createsTournament($tournament);
     }
 
     #[Rest\Get('/api/tournaments', name: 'get_tournaments')]
@@ -73,13 +74,15 @@ class TournamentController extends AbstractFOSRestController
         return $game;
     }
 
+    /**
+     * @throws Exception
+     */
     #[Rest\Put('/api/tournaments/{id}/games/{game}', name: 'put_tournament_game')]
     #[ParamConverter("modifiedGame", class: "App\Entity\Tournament\Game", converter: "fos_rest.request_body")]
     #[Rest\View]
     public function putTournamentGame(Tournament $tournament, Game $game, Game $modifiedGame, TournamentService $tournamentService): Game
     {
         return $tournamentService->editTournamentGame($tournament, $game, $modifiedGame);
-
     }
 
     #[Rest\Delete('/api/tournaments/{id}/games/{game}', name: 'delete_tournament_game')]

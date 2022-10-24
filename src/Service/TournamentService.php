@@ -4,12 +4,9 @@ namespace App\Service;
 
 use App\Entity\Tournament\Tournament;
 use App\Entity\Tournament\Game;
-use App\Event\GameUpdateEvent;
-use App\EventSubscriber\TournamentEventSubscriber;
 use App\Repository\GameRepository;
 use App\Repository\TournamentRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -19,41 +16,64 @@ class TournamentService
     private GameRepository $gameRepository;
     private TournamentRepository $tournamentRepository;
     private ValidatorInterface $validator;
-    private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
         ManagerRegistry $managerRegistry,
         GameRepository $gameRepository,
         TournamentRepository $tournamentRepository,
         ValidatorInterface $validator,
-        EventDispatcherInterface $eventDispatcher
-
     ) {
         $this->managerRegistry = $managerRegistry;
         $this->gameRepository = $gameRepository;
         $this->tournamentRepository = $tournamentRepository;
         $this->validator = $validator;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function postTournament(Tournament $tournament): Tournament
+    public function createsTournament(Tournament $tournament): Tournament
     {
         $errors = $this->validator->validate($tournament);
         if (count($errors) > 0) {
             throw new ValidatorException($errors);
         } else {
-            // when posting Tournament, all necessary games are generated
-            // 32 games is default value for this type of tournament
-            foreach ($tournament->generateGame(32) as $game)
-            {
-                $this->managerRegistry->getManager()->persist($game);
-            }
-            $tournament->setCreatedAt(new \DateTimeImmutable("now"));
+            $tournament->setCreatedAt(new \DateTime());
+            $this->generateGame($tournament);
             $this->managerRegistry->getManager()->persist($tournament);
             $this->managerRegistry->getManager()->flush();
         }
 
         return $tournament;
+    }
+
+    public function generateGame(Tournament $tournament)
+    {
+        $amountOfGameNeeded = $this->getAmountOfGameNeeded($tournament->getTeamsNeeded(), $tournament->hasBracketLooser());
+        for ($i = 0; $i < $amountOfGameNeeded; $i++) {
+            $game = new Game();
+            $game->setName(strval($i + 1));
+            $game->setIsFinished(false);
+            $game->setTournament($tournament);
+            $this->managerRegistry->getManager()->persist($game);
+        }
+        $this->managerRegistry->getManager()->flush();
+
+    }
+
+    public function assignTeam(array $array, Tournament $tournament)
+    {
+        //if tournament.isStarted
+
+        // $quantity ($tournament->getTeamNeeded / 2)        $quantity = 4, $teamNeeded = 8
+        // teams[] array of team ordered by team->getPoints()
+
+        //  for ( $i = 0; $i < $quantity; $i++)
+        // $game =  $tournamentRepository->findBy["name" =>  game::namelist[$i]]
+        //
+        //      $teamId1 = $teams[$i]                       donc   1, 2, 3, 4
+        //      $teamId2 = $teamNeeded +  1 - teamId1       donc   8, 7, 6, 5
+
+        //      game -> setTeam1($teamid1)
+        //           -> setTeam2($teamid2)
+        //
     }
 
     public function getAllTournament(): array
@@ -72,7 +92,9 @@ class TournamentService
             $existingTournament->setLinkTwitch($modifiedTournament->getLinkTwitch());
             $existingTournament->setStartAt($modifiedTournament->getStartAt());
             $existingTournament->setPoints($modifiedTournament->getPoints());
-            $existingTournament->setType($modifiedTournament->getType());
+            $existingTournament->setBracketLooser($modifiedTournament->hasBracketLooser());
+            $existingTournament->setTeamsNeeded($modifiedTournament->getTeamsNeeded());
+
             $this->managerRegistry->getManager()->persist($existingTournament);
             $this->managerRegistry->getManager()->flush();
 
@@ -106,9 +128,6 @@ class TournamentService
         }
     }
 
-    /**
-     * @throws \Exception
-     */
     public function editTournamentGame(Tournament $tournament, Game $existingGame, Game $modifiedGame): Game
     {
         $errors = $this->validator->validate($modifiedGame);
@@ -123,11 +142,6 @@ class TournamentService
         $this->managerRegistry->getManager()->persist($existingGame);
         $this->managerRegistry->getManager()->flush();
 
-        $event = new GameUpdateEvent($existingGame);
-        $this->eventDispatcher->addSubscriber(new TournamentEventSubscriber());
-        $this->eventDispatcher->dispatch($event, GameUpdateEvent::NAME);
-
-
         return $existingGame;
     }
 
@@ -136,4 +150,20 @@ class TournamentService
         $this->managerRegistry->getManager()->remove($game);
         $this->managerRegistry->getManager()->flush();
     }
+
+    private function getAmountOfGameNeeded(int $amountOfTeams, bool $hasBracketLooser): int
+    {
+        $amount = 1;
+        for ($i = 1; $i <= $amountOfTeams; $i += 2) {
+            $amount = $i;
+        }
+
+        if ($hasBracketLooser) {
+            $amount = $amount * 2;
+        }
+
+        return $amount;
+    }
+
+
 }

@@ -16,15 +16,14 @@ class TournamentControllerTest extends WebTestCase
 
     public function testPostTournament(): void
     {
-        $name = "tournamentNamePost";
+        $name = "1bd";
         $points = 1;
-        $type = '2s';
-
         $this->client->jsonRequest('POST', '/api/tournaments',
         [
             'name' => $name,
             'points' => $points,
-            'type' => $type,
+            '_teams_needed' => 1,
+            '_bracket_looser' => true,
             'start_at' => "2022-10-10T14:10:12+00:00"
         ]);
         $tournament = json_decode($this->client->getResponse()->getContent(), true);
@@ -52,17 +51,15 @@ class TournamentControllerTest extends WebTestCase
 
     public function testPutTournament(): void
     {
-        $tournamentId = 4;
-        $name = 'newName';
+        $tournamentId = 1;
+        $name = 'new';
         $startAt = '2022-10-09T14:22:06+00:00';
         $points = 12;
-        $type = '2s';
 
         $this->client->jsonRequest('PUT', 'api/tournaments/' . $tournamentId, [
             'name' => $name,
             'start_at' => $startAt,
             'points' => $points,
-            'type' => $type
         ] );
         $tournament = json_decode($this->client->getResponse()->getContent(), true);
 
@@ -70,7 +67,6 @@ class TournamentControllerTest extends WebTestCase
         $this->assertEquals($name, $tournament["name"]);
         $this->assertEquals($startAt, $tournament["start_at"]);
         $this->assertEquals($points, $tournament["points"]);
-        $this->assertEquals($type, $tournament["type"]);
     }
 
     public function testDeleteTournament(): void
@@ -81,10 +77,10 @@ class TournamentControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(204);
     }
 
-    public function testPostTournamentGame(): void
+     public function testPostTournamentGame(): void
     {
         $tournamentId = 1;
-        $name = "gameName";
+        $name = "gam";
 
         $this->client->jsonRequest('POST', '/api/tournaments/' . $tournamentId . '/games',
             [
@@ -95,6 +91,7 @@ class TournamentControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(200);
         $this->gameHasKey($game);
     }
+
 
     public function testGetTournamentGame(): void
     {
@@ -122,9 +119,9 @@ class TournamentControllerTest extends WebTestCase
 
     public function testPutTournamentGame(): void
     {
-        $tournamentId = 1;
-        $gameId = 3;
-        $name = 'newName';
+        $tournamentId = 6;
+        $gameId = 1;
+        $name = '122';
         $scoreTeam1 = 3;
         $scoreTeam2 = 1;
 
@@ -179,20 +176,19 @@ class TournamentControllerTest extends WebTestCase
     {
         $this->assertArrayHasKey("id", $tournament);
         $this->assertArrayHasKey("name", $tournament);
-        $this->assertArrayHasKey("teams", $tournament);
         $this->assertArrayHasKey("cash_price", $tournament);
         $this->assertArrayHasKey("link_twitch", $tournament);
         $this->assertArrayHasKey("created_at", $tournament);
         $this->assertArrayHasKey("start_at", $tournament);
         $this->assertArrayHasKey("points", $tournament);
-        $this->assertArrayHasKey("type", $tournament);
     }
 
     public function gameHasKey(Array $game)
     {
         $this->assertArrayHasKey('id', $game);
         $this->assertArrayHasKey('name', $game);
-        $this->assertArrayHasKey('teams', $game);
+        $this->assertArrayHasKey('team1', $game);
+        $this->assertArrayHasKey('team2', $game);
         $this->assertArrayHasKey('is_finished', $game);
         $this->assertArrayHasKey('score_team1', $game);
         $this->assertArrayHasKey('score_team2', $game);

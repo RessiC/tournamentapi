@@ -19,9 +19,6 @@ class Tournament
     #[ORM\Column(length: 20)]
     private string $name;
 
-    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'tournaments', cascade: ["persist"])]
-    private ?Collection $teams = null;
-
     #[ORM\Column(nullable: true)]
     private ?int $cashPrice = null;
 
@@ -29,24 +26,32 @@ class Tournament
     private ?string $linkTwitch = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private \DateTime $createdAt;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $startAt = null;
+    private \DateTime $startAt;
 
     #[ORM\Column]
     private ?int $points = null;
 
-    #[ORM\Column(length: 10)]
-    private ?string $type = null;
+    #[ORM\Column]
+    private ?int $TeamsNeeded = null;
+
+    #[ORM\Column]
+    private ?bool $BracketLooser = null;
 
     #[ORM\OneToMany(mappedBy: 'tournament', targetEntity: Game::class, cascade: ["persist", "remove"])]
     private ?Collection $games = null;
 
+
+    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'tournaments', cascade: ["persist"])]
+    private ?Collection $teams = null;
+
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable("now");
+        $this->createdAt = new \DateTime();
         $this->games = new ArrayCollection();
     }
 
@@ -122,24 +127,24 @@ class Tournament
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(\DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getStartAt(): ?\DateTimeImmutable
+    public function getStartAt(): ?\DateTime
     {
         return $this->startAt;
     }
 
-    public function setStartAt(\DateTimeImmutable $startAt): self
+    public function setStartAt(\DateTime $startAt): self
     {
         $this->startAt = $startAt;
 
@@ -154,18 +159,6 @@ class Tournament
     public function setPoints(int $points): self
     {
         $this->points = $points;
-
-        return $this;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): self
-    {
-        $this->type = $type;
 
         return $this;
     }
@@ -197,18 +190,28 @@ class Tournament
         return $this;
     }
 
-    public function generateGame(int $numbers): array
+    public function getTeamsNeeded(): ?int
     {
-        $games = [];
-        for ($i = 1; $i < $numbers; $i++)
-        {
-            $game = new Game();
-            $gameName = $game->getListNameGame();
-            $game->setName($gameName[$i]);
-            $game->setTournament($this);
-            $game->setIsFinished(false);
-            $games[] = $game;
-        }
-        return $games;
+        return $this->TeamsNeeded;
     }
+
+    public function setTeamsNeeded(int $TeamsNeeded): self
+    {
+        $this->TeamsNeeded = $TeamsNeeded;
+
+        return $this;
+    }
+
+    public function hasBracketLooser(): ?bool
+    {
+        return $this->BracketLooser;
+    }
+
+    public function setBracketLooser(bool $BracketLooser): self
+    {
+        $this->BracketLooser = $BracketLooser;
+
+        return $this;
+    }
+
 }
