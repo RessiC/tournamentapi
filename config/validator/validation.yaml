@@ -36,12 +36,6 @@ App\Entity\Tournament\Tournament:
           maxMessage: 'Team name cannot be longer than {{ limit }} characters'
     points:
       - PositiveOrZero: ~
-    type:
-      - Length:
-          min: 2
-          max: 4
-          minMessage: 'Team name must be at least {{ limit }} characters long'
-          maxMessage: 'Team name cannot be longer than {{ limit }} characters'
     cashPrice:
       - PositiveOrZero: ~
 

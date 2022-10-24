@@ -27,6 +27,9 @@ App\Entity\Tournament\Tournament:
     points:
       expose: true
       type: int
-    type:
+    TeamsNeeded:
       expose: true
-      type: string
+      type: int
+    BracketLooser:
+      expose: true
+      type: bool

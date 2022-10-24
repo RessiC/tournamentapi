@@ -19,9 +19,6 @@ class Tournament
     #[ORM\Column(length: 20)]
     private string $name;
 
-    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'tournaments', cascade: ["persist"])]
-    private ?Collection $teams = null;
-
     #[ORM\Column(nullable: true)]
     private ?int $cashPrice = null;
 
@@ -32,16 +29,24 @@ class Tournament
     private \DateTime $createdAt;
 
     #[ORM\Column]
-    private ?\DateTime $startAt = null;
+    private \DateTime $startAt;
 
     #[ORM\Column]
     private ?int $points = null;
 
-    #[ORM\Column(length: 10)]
-    private ?string $type = null;
+    #[ORM\Column]
+    private ?int $TeamsNeeded = null;
+
+    #[ORM\Column]
+    private ?bool $BracketLooser = null;
 
     #[ORM\OneToMany(mappedBy: 'tournament', targetEntity: Game::class, cascade: ["persist", "remove"])]
     private ?Collection $games = null;
+
+
+    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'tournaments', cascade: ["persist"])]
+    private ?Collection $teams = null;
+
 
     public function __construct()
     {
@@ -158,18 +163,6 @@ class Tournament
         return $this;
     }
 
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     public function getGames(): Collection|null
     {
         return $this->games;
@@ -193,6 +186,30 @@ class Tournament
                 $game->setTournament(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTeamsNeeded(): ?int
+    {
+        return $this->TeamsNeeded;
+    }
+
+    public function setTeamsNeeded(int $TeamsNeeded): self
+    {
+        $this->TeamsNeeded = $TeamsNeeded;
+
+        return $this;
+    }
+
+    public function isBracketLooser(): ?bool
+    {
+        return $this->BracketLooser;
+    }
+
+    public function setBracketLooser(bool $BracketLooser): self
+    {
+        $this->BracketLooser = $BracketLooser;
 
         return $this;
     }

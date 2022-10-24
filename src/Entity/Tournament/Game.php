@@ -4,8 +4,6 @@ namespace App\Entity\Tournament;
 
 use App\Entity\Team\Team;
 use App\Repository\GameRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 use function PHPUnit\Framework\throwException;

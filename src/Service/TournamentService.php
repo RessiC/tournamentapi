@@ -7,7 +7,6 @@ use App\Entity\Tournament\Game;
 use App\Repository\GameRepository;
 use App\Repository\TournamentRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -17,20 +16,17 @@ class TournamentService
     private GameRepository $gameRepository;
     private TournamentRepository $tournamentRepository;
     private ValidatorInterface $validator;
-    private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
         ManagerRegistry $managerRegistry,
         GameRepository $gameRepository,
         TournamentRepository $tournamentRepository,
         ValidatorInterface $validator,
-        EventDispatcherInterface $eventDispatcher
     ) {
         $this->managerRegistry = $managerRegistry;
         $this->gameRepository = $gameRepository;
         $this->tournamentRepository = $tournamentRepository;
         $this->validator = $validator;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function createsTournament(Tournament $tournament): Tournament
@@ -64,7 +60,7 @@ class TournamentService
             $game = new Game();
             $gameName = $game::getListNameGame();
             $game->setName($gameName[$i]);
-            $game->setTournament($tournament);
+            $game->setTournament($tournament);x
             $game->setIsFinished(false);
             $games[] = $game;
         }
