@@ -37,8 +37,8 @@ class TournamentService
         } else {
             $tournament->setCreatedAt(new \DateTime());
             $this->generateGame($tournament);
-            //$this->managerRegistry->getManager()->persist($tournament);
-            //$this->managerRegistry->getManager()->flush();
+            $this->managerRegistry->getManager()->persist($tournament);
+            $this->managerRegistry->getManager()->flush();
         }
 
         return $tournament;
@@ -49,15 +49,31 @@ class TournamentService
         $amountOfGameNeeded = $this->getAmountOfGameNeeded($tournament->getTeamsNeeded(), $tournament->hasBracketLooser());
         for ($i = 0; $i < $amountOfGameNeeded; $i++) {
             $game = new Game();
-            $game->setName($i);
+            $game->setName(strval($i + 1));
+            $game->setIsFinished(false);
+            $game->setTournament($tournament);
+            $this->managerRegistry->getManager()->persist($game);
         }
+        $this->managerRegistry->getManager()->flush();
 
+    }
 
+    public function assignTeam(array $array, Tournament $tournament)
+    {
+        //if tournament.isStarted
 
+        // $quantity ($tournament->getTeamNeeded / 2)        $quantity = 4, $teamNeeded = 8
+        // teams[] array of team ordered by team->getPoints()
 
-        //next step: need to assign team in each first game depending on team rank when tournamentIsStarted
+        //  for ( $i = 0; $i < $quantity; $i++)
+        // $game =  $tournamentRepository->findBy["name" =>  game::namelist[$i]]
+        //
+        //      $teamId1 = $teams[$i]                       donc   1, 2, 3, 4
+        //      $teamId2 = $teamNeeded +  1 - teamId1       donc   8, 7, 6, 5
 
-
+        //      game -> setTeam1($teamid1)
+        //           -> setTeam2($teamid2)
+        //
     }
 
     public function getAllTournament(): array
@@ -76,6 +92,9 @@ class TournamentService
             $existingTournament->setLinkTwitch($modifiedTournament->getLinkTwitch());
             $existingTournament->setStartAt($modifiedTournament->getStartAt());
             $existingTournament->setPoints($modifiedTournament->getPoints());
+            $existingTournament->setBracketLooser($modifiedTournament->hasBracketLooser());
+            $existingTournament->setTeamsNeeded($modifiedTournament->getTeamsNeeded());
+
             $this->managerRegistry->getManager()->persist($existingTournament);
             $this->managerRegistry->getManager()->flush();
 
