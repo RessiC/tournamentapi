@@ -1,5 +1,4 @@
 App\Entity\User\User:
-  exclusion_policy: ALL
   access_type: public_method
   properties:
     id:
@@ -9,6 +8,7 @@ App\Entity\User\User:
       expose: true
       type: string
     password:
+      expose: false
       type: string
       accessor:
         setter: setPassword

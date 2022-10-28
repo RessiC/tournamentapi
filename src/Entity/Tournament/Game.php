@@ -34,117 +34,236 @@ class Game
     #[ORM\Column(nullable: true)]
     private ?int $scoreTeam2 = null;
 
-    #[ORM\ManyToOne(cascade: ["persist"], inversedBy: 'games')]
-    private ?Tournament $tournament = null;
+    #[ORM\Column(nullable: true)]
+    private ?int $scoreTeam1accordingToTeam1 = null;
 
-    private static array $listGameName = [
-        0 => 1,
-        1 => 2,
-    ];
+    #[ORM\Column(nullable: true)]
+    private ?int $scoreTeam2accordingToTeam1 = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $scoreTeam1accordingToTeam2 = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $scoreTeam2accordingToTeam2 = null;
+
+    #[ORM\OneToOne(targetEntity: Game::class)]
+    private ?Game $parent = null;
+
+    #[ORM\ManyToOne(inversedBy: 'games')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Bracket $bracket = null;
 
     public function __construct()
     {
     }
-
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(int $id): self
+    public function setId(?int $id): Game
     {
         $this->id = $id;
-
         return $this;
     }
+
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): Game
     {
         $this->name = $name;
-
         return $this;
     }
 
-    public function isFinished(): ?bool
+    public function getIsFinished(): ?bool
     {
         return $this->isFinished;
     }
 
-    public function setIsFinished(bool $isFinished): self
+
+    public function setIsFinished(?bool $isFinished): Game
     {
         $this->isFinished = $isFinished;
-
         return $this;
     }
 
-    public function getScoreTeam1(): ?int
-    {
-        return $this->scoreTeam1;
-    }
-
-    public function setScoreTeam1(?int $scoreTeam1): self
-    {
-        $this->scoreTeam1 = $scoreTeam1;
-
-        return $this;
-    }
-
-    public function getScoreTeam2(): ?int
-    {
-        return $this->scoreTeam2;
-    }
-
-    public function setScoreTeam2(?int $scoreTeam2): self
-    {
-        $this->scoreTeam2 = $scoreTeam2;
-
-        return $this;
-    }
-
-    public function getTournament(): ?Tournament
-    {
-        return $this->tournament;
-    }
-
-    public function setTournament(?Tournament $tournament): self
-    {
-        $this->tournament = $tournament;
-
-        return $this;
-    }
-
-    public static function getListNameGame(): array
-    {
-        return self::$listGameName;
-    }
-
+    /**
+     * @return Team|null
+     */
     public function getTeam1(): ?Team
     {
         return $this->team1;
     }
 
-    public function setTeam1(?Team $team1): self
+    /**
+     * @param Team|null $team1
+     * @return Game
+     */
+    public function setTeam1(?Team $team1): Game
     {
         $this->team1 = $team1;
-
         return $this;
     }
 
+    /**
+     * @return Team|null
+     */
     public function getTeam2(): ?Team
     {
         return $this->team2;
     }
 
-    public function setTeam2(?Team $team2): self
+    /**
+     * @param Team|null $team2
+     * @return Game
+     */
+    public function setTeam2(?Team $team2): Game
     {
         $this->team2 = $team2;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getScoreTeam1(): ?int
+    {
+        return $this->scoreTeam1;
+    }
+
+    /**
+     * @param int|null $scoreTeam1
+     * @return Game
+     */
+    public function setScoreTeam1(?int $scoreTeam1): Game
+    {
+        $this->scoreTeam1 = $scoreTeam1;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getScoreTeam2(): ?int
+    {
+        return $this->scoreTeam2;
+    }
+
+    /**
+     * @param int|null $scoreTeam2
+     * @return Game
+     */
+    public function setScoreTeam2(?int $scoreTeam2): Game
+    {
+        $this->scoreTeam2 = $scoreTeam2;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getScoreTeam1accordingToTeam1(): ?int
+    {
+        return $this->scoreTeam1accordingToTeam1;
+    }
+
+    /**
+     * @param int|null $scoreTeam1accordingToTeam1
+     * @return Game
+     */
+    public function setScoreTeam1accordingToTeam1(?int $scoreTeam1accordingToTeam1): Game
+    {
+        $this->scoreTeam1accordingToTeam1 = $scoreTeam1accordingToTeam1;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getScoreTeam2accordingToTeam1(): ?int
+    {
+        return $this->scoreTeam2accordingToTeam1;
+    }
+
+    /**
+     * @param int|null $scoreTeam2accordingToTeam1
+     * @return Game
+     */
+    public function setScoreTeam2accordingToTeam1(?int $scoreTeam2accordingToTeam1): Game
+    {
+        $this->scoreTeam2accordingToTeam1 = $scoreTeam2accordingToTeam1;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getScoreTeam1accordingToTeam2(): ?int
+    {
+        return $this->scoreTeam1accordingToTeam2;
+    }
+
+    /**
+     * @param int|null $scoreTeam1accordingToTeam2
+     * @return Game
+     */
+    public function setScoreTeam1accordingToTeam2(?int $scoreTeam1accordingToTeam2): Game
+    {
+        $this->scoreTeam1accordingToTeam2 = $scoreTeam1accordingToTeam2;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getScoreTeam2accordingToTeam2(): ?int
+    {
+        return $this->scoreTeam2accordingToTeam2;
+    }
+
+    /**
+     * @param int|null $scoreTeam2accordingToTeam2
+     * @return Game
+     */
+    public function setScoreTeam2accordingToTeam2(?int $scoreTeam2accordingToTeam2): Game
+    {
+        $this->scoreTeam2accordingToTeam2 = $scoreTeam2accordingToTeam2;
+        return $this;
+    }
+
+
+    /**
+     * @return Game|null
+     */
+    public function getParent(): ?Game
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param Game|null $parent
+     * @return Game
+     */
+    public function setParent(?Game $parent): Game
+    {
+        $this->parent = $parent;
+        return $this;
+    }
+
+    public function getBracket(): ?Bracket
+    {
+        return $this->bracket;
+    }
+
+    public function setBracket(?Bracket $bracket): self
+    {
+        $this->bracket = $bracket;
 
         return $this;
     }
+
 }

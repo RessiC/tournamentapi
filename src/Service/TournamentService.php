@@ -29,14 +29,17 @@ class TournamentService
         $this->validator = $validator;
     }
 
+    /**
+     * @param Tournament $tournament
+     * @return Tournament
+     */
     public function createsTournament(Tournament $tournament): Tournament
     {
         $errors = $this->validator->validate($tournament);
         if (count($errors) > 0) {
             throw new ValidatorException($errors);
         } else {
-            $tournament->setCreatedAt(new \DateTime());
-            $this->generateGame($tournament);
+            //$this->initializeTournament($tournament);
             $this->managerRegistry->getManager()->persist($tournament);
             $this->managerRegistry->getManager()->flush();
         }
@@ -44,43 +47,17 @@ class TournamentService
         return $tournament;
     }
 
-    public function generateGame(Tournament $tournament)
-    {
-        $amountOfGameNeeded = $this->getAmountOfGameNeeded($tournament->getTeamsNeeded(), $tournament->hasBracketLooser());
-        for ($i = 0; $i < $amountOfGameNeeded; $i++) {
-            $game = new Game();
-            $game->setName(strval($i + 1));
-            $game->setIsFinished(false);
-            $game->setTournament($tournament);
-            $this->managerRegistry->getManager()->persist($game);
-        }
-        $this->managerRegistry->getManager()->flush();
-
-    }
-
-    public function assignTeam(array $array, Tournament $tournament)
-    {
-        //if tournament.isStarted
-
-        // $quantity ($tournament->getTeamNeeded / 2)        $quantity = 4, $teamNeeded = 8
-        // teams[] array of team ordered by team->getPoints()
-
-        //  for ( $i = 0; $i < $quantity; $i++)
-        // $game =  $tournamentRepository->findBy["name" =>  game::namelist[$i]]
-        //
-        //      $teamId1 = $teams[$i]                       donc   1, 2, 3, 4
-        //      $teamId2 = $teamNeeded +  1 - teamId1       donc   8, 7, 6, 5
-
-        //      game -> setTeam1($teamid1)
-        //           -> setTeam2($teamid2)
-        //
-    }
 
     public function getAllTournament(): array
     {
         return $this->tournamentRepository->findAll();
     }
 
+    /**
+     * @param Tournament $existingTournament
+     * @param Tournament $modifiedTournament
+     * @return Tournament
+     */
     public function editTournament(Tournament $existingTournament, Tournament $modifiedTournament): Tournament
     {
         $errors = $this->validator->validate($modifiedTournament);
@@ -119,7 +96,6 @@ class TournamentService
         if (count($errors) > 0) {
             throw new ValidatorException($errors);
         } else {
-            $game->setTournament($tournament);
             $game->setIsFinished(false);
             $this->managerRegistry->getManager()->persist($game);
             $this->managerRegistry->getManager()->flush();
@@ -135,9 +111,8 @@ class TournamentService
             throw new ValidatorException($errors);
         }
 
-        $existingGame->setScoreTeam1($modifiedGame->getScoreTeam1());
-        $existingGame->setScoreTeam2($modifiedGame->getScoreTeam2());
-        $existingGame->setIsFinished($modifiedGame->isFinished());
+
+        $tournament->inputGameResult($modifiedGame, $modifiedGame->getScoreTeam1accordingToTeam1());
 
         $this->managerRegistry->getManager()->persist($existingGame);
         $this->managerRegistry->getManager()->flush();
@@ -150,20 +125,5 @@ class TournamentService
         $this->managerRegistry->getManager()->remove($game);
         $this->managerRegistry->getManager()->flush();
     }
-
-    private function getAmountOfGameNeeded(int $amountOfTeams, bool $hasBracketLooser): int
-    {
-        $amount = 1;
-        for ($i = 1; $i <= $amountOfTeams; $i += 2) {
-            $amount = $i;
-        }
-
-        if ($hasBracketLooser) {
-            $amount = $amount * 2;
-        }
-
-        return $amount;
-    }
-
 
 }

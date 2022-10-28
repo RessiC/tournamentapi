@@ -35,24 +35,23 @@ class Tournament
     private ?int $points = null;
 
     #[ORM\Column]
-    private ?int $TeamsNeeded = null;
+    private ?int $teamsNeeded = null;
 
     #[ORM\Column]
-    private ?bool $BracketLooser = null;
-
-    #[ORM\OneToMany(mappedBy: 'tournament', targetEntity: Game::class, cascade: ["persist", "remove"])]
-    private ?Collection $games = null;
-
+    private ?bool $bracketLooser = null;
 
     #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'tournaments', cascade: ["persist"])]
     private ?Collection $teams = null;
 
+    #[ORM\OneToMany(mappedBy: 'tournament', targetEntity: Bracket::class, orphanRemoval: true)]
+    private Collection $brackets;
+
 
     public function __construct()
     {
-        $this->teams = new ArrayCollection();
         $this->createdAt = new \DateTime();
-        $this->games = new ArrayCollection();
+        $this->teams = new ArrayCollection();
+        $this->brackets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -163,55 +162,126 @@ class Tournament
         return $this;
     }
 
-    public function getGames(): Collection|null
-    {
-        return $this->games;
-    }
-
-    public function addGame(Game $game): self
-    {
-        if (!$this->games->contains($game)) {
-            $this->games->add($game);
-            $game->setTournament($this);
-        }
-
-        return $this;
-    }
-
-    public function removeGame(Game $game): self
-    {
-        if ($this->games->removeElement($game)) {
-            // set the owning side to null (unless already changed)
-            if ($game->getTournament() === $this) {
-                $game->setTournament(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getTeamsNeeded(): ?int
     {
-        return $this->TeamsNeeded;
+        return $this->teamsNeeded;
     }
 
-    public function setTeamsNeeded(int $TeamsNeeded): self
+    public function setTeamsNeeded(int $teamsNeeded): self
     {
-        $this->TeamsNeeded = $TeamsNeeded;
+        $this->teamsNeeded = $teamsNeeded;
 
         return $this;
     }
 
     public function hasBracketLooser(): ?bool
     {
-        return $this->BracketLooser;
+        return $this->bracketLooser;
     }
 
-    public function setBracketLooser(bool $BracketLooser): self
+    public function setBracketLooser(bool $bracketLooser): self
     {
-        $this->BracketLooser = $BracketLooser;
+        $this->bracketLooser = $bracketLooser;
 
         return $this;
+    }
+
+    public function isStarted()
+    {
+        return true;
+    }
+
+    /**
+     * @return Collection<int, Bracket>
+     */
+    public function getBrackets(): Collection
+    {
+        return $this->brackets;
+    }
+
+    public function addBracket(Bracket $bracket): self
+    {
+        if (!$this->brackets->contains($bracket)) {
+            $this->brackets->add($bracket);
+            $bracket->setTournament($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBracket(Bracket $bracket): self
+    {
+        if ($this->brackets->removeElement($bracket)) {
+            // set the owning side to null (unless already changed)
+            if ($bracket->getTournament() === $this) {
+                $bracket->setTournament(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Tournament $tournament
+     */
+    public function initializeTournament(Tournament $tournament)
+    {
+//            creates winner bracket and looserBracket if needed (tournament->hasBracketLooser())
+//            creates games for each bracket
+//            if ($i%3 === 0) {
+//               $match->setPreviousGame1($games[$-1]);
+//               $match->setPreviousGame2($games[$-2]);
+//            }
+
+
+    }
+    /**
+     * @param array $teams
+     * @param Tournament $tournament
+     */
+    public function assignTeam(array $teams, Tournament $tournament)
+    {
+        if ($tournament->isStarted()) {
+
+            // assign Team in each game according to their rank ( usort team->getPoints)
+
+
+
+
+
+        }
+
+        // first thinking : not good enough according to our needs.
+        // $quantity ($tournament->getTeamNeeded / 2)        $quantity = 4, $teamNeeded = 8
+        // teams[] array of team ordered by team->getPoints()
+
+        //  for ( $i = 0; $i < $quantity; $i++)
+        // $game =  $tournamentRepository->findBy["name" =>  game::namelist[$i]]
+        //
+        //      $teamId1 = $teams[$i]                       donc   1, 2, 3, 4
+        //      $teamId2 = $teamNeeded +  1 - teamId1       donc   8, 7, 6, 5
+
+        //      game -> setTeam1($teamid1)
+        //           -> setTeam2($teamid2)
+        //
+    }
+
+    // $score = "3-2"
+
+
+    public function inputGameResult(Game $game, string $score) {
+        // Si team 1 qui PUT alors remplir $game->setScoreTeam1accordingToTeam1()...
+        $this->checkEndMatch();
+    }
+
+    // une fois que les 2 teams ont rempli les scores
+    public function checkEndMatch() {
+        // si les 2 scores sont report et SI ils pareils sinon
+        // isFinished => true
+        // nextSteps :
+        // 1. assigner le winner sur le match suivant dans la winner bracket
+        // $tournament->getMatch(?)
+        // 2. assigner le looser sur le match suivant dans la looser bracket
     }
 
 }
