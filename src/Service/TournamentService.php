@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Tournament\Bracket;
 use App\Entity\Tournament\Tournament;
 use App\Entity\Tournament\Game;
 use App\Repository\GameRepository;
@@ -28,25 +29,6 @@ class TournamentService
         $this->tournamentRepository = $tournamentRepository;
         $this->validator = $validator;
     }
-
-    /**
-     * @param Tournament $tournament
-     * @return Tournament
-     */
-    public function createsTournament(Tournament $tournament): Tournament
-    {
-        $errors = $this->validator->validate($tournament);
-        if (count($errors) > 0) {
-            throw new ValidatorException($errors);
-        } else {
-            //$this->initializeTournament($tournament);
-            $this->managerRegistry->getManager()->persist($tournament);
-            $this->managerRegistry->getManager()->flush();
-        }
-
-        return $tournament;
-    }
-
 
     public function getAllTournament(): array
     {
@@ -85,9 +67,14 @@ class TournamentService
         $this->managerRegistry->getManager()->flush();
     }
 
-    public function getTournamentGames(int $id)
+    public function getTournamentGames(Tournament $tournament): array
     {
-        return $this->gameRepository->findGamesByTournament($id);
+        $games = [];
+        /** @var Bracket $bracket */
+        foreach ($tournament->getBrackets() as $bracket) {
+            $games[] = $this->gameRepository->findBy(["bracket" => $bracket->getId()]);
+        }
+        return $games;
     }
 
     public function postTournamentGame(Tournament $tournament, Game $game): Game
@@ -111,8 +98,7 @@ class TournamentService
             throw new ValidatorException($errors);
         }
 
-
-        $tournament->inputGameResult($modifiedGame, $modifiedGame->getScoreTeam1accordingToTeam1());
+       $tournament->inputGameResult($modifiedGame);
 
         $this->managerRegistry->getManager()->persist($existingGame);
         $this->managerRegistry->getManager()->flush();

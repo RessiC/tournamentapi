@@ -221,10 +221,7 @@ class Tournament
         return $this;
     }
 
-    /**
-     * @param Tournament $tournament
-     */
-    public function initializeTournament(Tournament $tournament)
+    public function initialize()
     {
 //            creates winner bracket and looserBracket if needed (tournament->hasBracketLooser())
 //            creates games for each bracket
@@ -232,7 +229,6 @@ class Tournament
 //               $match->setPreviousGame1($games[$-1]);
 //               $match->setPreviousGame2($games[$-2]);
 //            }
-
 
     }
     /**
@@ -250,32 +246,24 @@ class Tournament
 
 
         }
-
-        // first thinking : not good enough according to our needs.
-        // $quantity ($tournament->getTeamNeeded / 2)        $quantity = 4, $teamNeeded = 8
-        // teams[] array of team ordered by team->getPoints()
-
-        //  for ( $i = 0; $i < $quantity; $i++)
-        // $game =  $tournamentRepository->findBy["name" =>  game::namelist[$i]]
-        //
-        //      $teamId1 = $teams[$i]                       donc   1, 2, 3, 4
-        //      $teamId2 = $teamNeeded +  1 - teamId1       donc   8, 7, 6, 5
-
-        //      game -> setTeam1($teamid1)
-        //           -> setTeam2($teamid2)
-        //
     }
 
     // $score = "3-2"
-
-
-    public function inputGameResult(Game $game, string $score) {
+    public function inputGameResult(Game $game)
+    {
         // Si team 1 qui PUT alors remplir $game->setScoreTeam1accordingToTeam1()...
-        $this->checkEndMatch();
+
+        $this->checkEndMatch($game);
     }
 
     // une fois que les 2 teams ont rempli les scores
-    public function checkEndMatch() {
+    public function checkEndMatch(Game $game)
+    {
+        if ($game->getScoreTeam1() != null && $game->getScoreTeam2() != null && $game->getScoreTeam1() === $game->getScoreTeam2())
+        {
+            $game->setIsFinished(true);
+
+        }
         // si les 2 scores sont report et SI ils pareils sinon
         // isFinished => true
         // nextSteps :

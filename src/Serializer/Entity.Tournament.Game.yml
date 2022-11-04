@@ -17,7 +17,7 @@ App\Entity\Tournament\Game:
       expose: true
       type: bool
       accessor:
-        getter: isFinished
+        getter: getIsFinished
         setter: setIsFinished
     scoreTeam1:
       expose: true
