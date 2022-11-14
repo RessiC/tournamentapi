@@ -259,7 +259,7 @@ class Tournament
     // une fois que les 2 teams ont rempli les scores
     public function checkEndMatch(Game $game)
     {
-        if ($game->getScoreTeam1() != null && $game->getScoreTeam2() != null && $game->getScoreTeam1() === $game->getScoreTeam2())
+        if ($game->getScoreTeam1() !== null && $game->getScoreTeam2() !== null && $game->getScoreTeam1() === $game->getScoreTeam2())
         {
             $game->setIsFinished(true);
 
