@@ -2,6 +2,8 @@
 
 namespace App\Tests\Controller\Tournament;
 
+use App\Entity\Tournament\Bracket;
+use App\Entity\Tournament\Tournament;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
@@ -16,20 +18,26 @@ class TournamentControllerTest extends WebTestCase
 
     public function testPostTournament(): void
     {
-        $name = "1bd";
-        $points = 1;
+        $tournament = new Tournament();
+
+        $tournament->setName('t4');
+        $tournament->setPoints(1000);
+        $tournament->setTeamsNeeded(12);
+        $tournament->setBracketLooser(false);
+        $tournament->addBracket(new Bracket());
+
         $this->client->jsonRequest('POST', '/api/tournaments',
         [
-            'name' => $name,
-            'points' => $points,
-            '_teams_needed' => 1,
-            '_bracket_looser' => true,
-            'start_at' => "2022-10-10T14:10:12+00:00"
+            'name' => $tournament->getName(),
+            'points' => $tournament->getPoints(),
+            'teams_needed' => $tournament->getTeamsNeeded(),
+            'bracket_looser' => $tournament->hasBracketLooser(),
+            'start_at' => "2022-10-10T14:10:12+00:00",
         ]);
-        $tournament = json_decode($this->client->getResponse()->getContent(), true);
+        $data = json_decode($this->client->getResponse()->getContent(), true);
 
         $this->assertResponseStatusCodeSame(200);
-        $this->tournamentHasKey($tournament);
+        $this->tournamentHasKey($data);
     }
 
     public function testGetTournament(): void
@@ -77,7 +85,7 @@ class TournamentControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(204);
     }
 
-     public function testPostTournamentGame(): void
+     public function testPostGame(): void
     {
         $tournamentId = 1;
         $name = "gam";

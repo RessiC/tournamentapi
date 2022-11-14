@@ -31,8 +31,8 @@ class TournamentCreateService {
             throw new ValidatorException($errors);
         } else {
             $tournament->initialize();
-            $this->managerRegistry->getManager()->persist($tournament);
-            $this->managerRegistry->getManager()->flush();
+            //$this->managerRegistry->getManager()->persist($tournament);
+            //$this->managerRegistry->getManager()->flush();
         }
 
         return $tournament;
