@@ -1,5 +1,4 @@
 App\Entity\Tournament\Tournament:
-  exclusion_policy: ALL
   access_type: public_method
   properties:
     id:
@@ -27,10 +26,10 @@ App\Entity\Tournament\Tournament:
     points:
       expose: true
       type: int
-    TeamsNeeded:
+    teamsNeeded:
       expose: true
       type: int
-    BracketLooser:
+    bracketLooser:
       expose: true
       type: bool
       accessor:

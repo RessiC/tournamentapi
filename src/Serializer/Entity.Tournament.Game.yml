@@ -1,5 +1,4 @@
 App\Entity\Tournament\Game:
-  exclusion_policy: ALL
   access_type: public_method
   properties:
     id:
@@ -18,7 +17,7 @@ App\Entity\Tournament\Game:
       expose: true
       type: bool
       accessor:
-        getter: isFinished
+        getter: getIsFinished
         setter: setIsFinished
     scoreTeam1:
       expose: true
