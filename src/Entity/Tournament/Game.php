@@ -53,6 +53,8 @@ class Game
     #[ORM\JoinColumn(nullable: false)]
     private ?Bracket $bracket = null;
 
+    private ?int $isReporting = null;
+
     public function __construct()
     {
     }
@@ -263,6 +265,35 @@ class Game
     {
         $this->bracket = $bracket;
 
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getIsReporting(): ?int
+    {
+        return $this->isReporting;
+    }
+
+    /**
+     * @param int|null $isReporting
+     */
+    public function setIsReporting(?int $isReporting): void
+    {
+        $this->isReporting = $isReporting;
+    }
+
+    public function copyFrom(Game $modifiedGame): self
+    {
+        //todo same for other properties
+        if ($modifiedGame->getIsReporting() === 1) {
+            $this->setScoreTeam1accordingToTeam1($modifiedGame->getScoreTeam1accordingToTeam1());
+            $this->setScoreTeam2accordingToTeam1($modifiedGame->getScoreTeam2accordingToTeam1());
+        } elseif ($modifiedGame->getIsReporting() === 2) {
+            $this->setScoreTeam1accordingToTeam2($modifiedGame->getScoreTeam1accordingToTeam2());
+            $this->setScoreTeam2accordingToTeam2($modifiedGame->getScoreTeam2accordingToTeam2());
+        }
         return $this;
     }
 

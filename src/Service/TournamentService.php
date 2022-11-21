@@ -45,20 +45,31 @@ class TournamentService
         $errors = $this->validator->validate($modifiedTournament);
         if (count($errors) > 0) {
             throw new ValidatorException($errors);
+
         } else {
-            $existingTournament->setName($modifiedTournament->getName());
-            $existingTournament->setCashPrice($modifiedTournament->getCashPrice());
-            $existingTournament->setLinkTwitch($modifiedTournament->getLinkTwitch());
-            $existingTournament->setStartAt($modifiedTournament->getStartAt());
-            $existingTournament->setPoints($modifiedTournament->getPoints());
-            $existingTournament->setBracketLooser($modifiedTournament->hasBracketLooser());
-            $existingTournament->setTeamsNeeded($modifiedTournament->getTeamsNeeded());
+            $existingTournament->copyFrom($modifiedTournament);
 
             $this->managerRegistry->getManager()->persist($existingTournament);
             $this->managerRegistry->getManager()->flush();
 
             return $existingTournament;
         }
+    }
+
+    public function editTournamentGame(Tournament $tournament, Game $existingGame, Game $modifiedGame): Game
+    {
+        $errors = $this->validator->validate($modifiedGame);
+        if (count($errors) > 0) {
+            throw new ValidatorException($errors);
+        }
+
+        $existingGame->copyFrom($modifiedGame);
+        $tournament->checkEndMatch($existingGame);
+
+        $this->managerRegistry->getManager()->persist($existingGame);
+        $this->managerRegistry->getManager()->flush();
+
+        return $existingGame;
     }
 
     public function deleteTournament(Tournament $tournament)
@@ -91,20 +102,7 @@ class TournamentService
         }
     }
 
-    public function editTournamentGame(Tournament $tournament, Game $existingGame, Game $modifiedGame): Game
-    {
-        $errors = $this->validator->validate($modifiedGame);
-        if (count($errors) > 0) {
-            throw new ValidatorException($errors);
-        }
 
-       $tournament->inputGameResult($modifiedGame);
-
-        $this->managerRegistry->getManager()->persist($existingGame);
-        $this->managerRegistry->getManager()->flush();
-
-        return $existingGame;
-    }
 
     public function deleteGame(Game $game)
     {
