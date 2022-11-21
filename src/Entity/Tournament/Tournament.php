@@ -81,7 +81,7 @@ class Tournament
     /**
      * @return Collection|Null
      */
-    public function getTeams(): Collection|Null
+    public function getTeams(): Collection|null
     {
         return $this->teams;
     }
@@ -209,6 +209,19 @@ class Tournament
         return $this;
     }
 
+    public function copyFrom(Tournament $modifiedTournament): self
+    {
+        $this->setName($modifiedTournament->getName());
+        $this->setCashPrice($modifiedTournament->getCashPrice());
+        $this->setLinkTwitch($modifiedTournament->getLinkTwitch());
+        $this->setStartAt($modifiedTournament->getStartAt());
+        $this->setPoints($modifiedTournament->getPoints());
+        $this->setTeamsNeeded($modifiedTournament->getTeamsNeeded());
+        $this->setBracketLooser($modifiedTournament->hasBracketLooser());
+
+        return $this;
+    }
+
     public function removeBracket(Bracket $bracket): self
     {
         if ($this->brackets->removeElement($bracket)) {
@@ -231,6 +244,7 @@ class Tournament
 //            }
 
     }
+
     /**
      * @param array $teams
      * @param Tournament $tournament
@@ -238,32 +252,24 @@ class Tournament
     public function assignTeam(array $teams, Tournament $tournament)
     {
         if ($tournament->isStarted()) {
-
             // assign Team in each game according to their rank ( usort team->getPoints)
-
-
-
 
 
         }
     }
 
-    // $score = "3-2"
-    public function inputGameResult(Game $game)
-    {
-        // Si team 1 qui PUT alors remplir $game->setScoreTeam1accordingToTeam1()...
-
-        $this->checkEndMatch($game);
-    }
 
     // une fois que les 2 teams ont rempli les scores
     public function checkEndMatch(Game $game)
     {
-        if ($game->getScoreTeam1() !== null && $game->getScoreTeam2() !== null && $game->getScoreTeam1() === $game->getScoreTeam2())
-        {
-            $game->setIsFinished(true);
+        if ($game->getScoreTeam1accordingToTeam1() === $game->getScoreTeam1accordingToTeam2() && $game->getScoreTeam2accordingToTeam1() === $game->getScoreTeam2accordingToTeam2() && $game->getScoreTeam1accordingToTeam1() !== null) {
+            $game->setScoreTeam1($game->getScoreTeam1accordingToTeam1());
+            $game->setScoreTeam2($game->getScoreTeam2accordingToTeam2());
 
+            $game->setIsFinished(true);
         }
+
+        return $game;
         // si les 2 scores sont report et SI ils pareils sinon
         // isFinished => true
         // nextSteps :
